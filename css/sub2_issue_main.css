@@ -1,0 +1,25 @@
+/*重新设置字体*/
+ body{font-family:Helvetica Neue,Roboto,microsoft yahei,Arial !important;} 
+ input,textarea,select{font-family:Helvetica Neue,Roboto,microsoft yahei,Arial !important;} 
+ /*重置header样式*/
+ .mui-newBar{background-color: #00C3F2;box-shadow: none;} 
+ .mui-newBar .mui-btn-link{color:#fff;} 
+ .mui-newBar .mui-title{color:#fff; font-size: 21px;left: 60px;right: 60px;} 
+ .mui-newBar .mui-pull-right{line-height: 54px;color:#fff;}
+ /*九宫格样式*/
+ .mui-table-view.mui-grid-9{ background-color:none;}
+.mui-table-view.mui-grid-9 .mui-table-view-cell.mui-active{background-color: #00C3F2;}
+
+/*重置表单样式*/
+   .mui-input-group:before{background: none;}
+   .mui-input-group:after{background: none;} 
+   .mui-input-group .mui-input-row{height: 55px;}
+   .mui-input-row label{line-height: 55px;padding: 0;text-align: left;width: 30%;padding-left: 10px;color:#1E1E1E;font-size: 18px !important;} .mui-input-group .mui-input-row:after{background-color: #eee;}
+   .mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea{width: 70%;min-height: 54px;text-align: left; font-size: 18px;border-radius: 0;}
+   .mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{left:45%;top: 40%;width: 200px;height: 45px;} 
+   .mui-input-row select{font-size: 18px;width: auto !important;padding-right: 100px;} 
+   .mui-input-row select option{text-align: left;} 
+   .mui-input-row textarea{padding: 10px;height: 50px;}
+   /*.mui-input-row input[readonly],.mui-input-row input[disabled]{color:#666;background-color:rgb(240,240,240);background: -webkit-linear-gradient(left, #fff, rgb(240,240,240)) !important; } 
+   .mui-input-row input:focus,.mui-input-row textarea:focus{background-color:rgb(245,253,254);background: -webkit-linear-gradient(left, #fff, rgb(245,253,254));}*/*/*/
+*/

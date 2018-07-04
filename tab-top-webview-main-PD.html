@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link href="css/sub2_issue_main.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<h1 class="mui-title">盘点管理</h1>
+			
+			<button id="#pandian" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">新增盘点</button>
+		</header>
+
+		<div class="mui-content">
+			<div id="slider" class="mui-slider mui-fullscreen">
+				<div style="padding: 5px 10px;">
+					<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<div class="mui-scroll">
+							<a class="mui-control-item mui-active" href="#item1mobile" data-wid="sub2_PANDIAN_finish.html">
+								已完成
+							</a>
+							<a class="mui-control-item" href="#item2mobile" data-wid="sub2_PANDIAN_unfinish.html">
+								未完成
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.8.2.min.js"></script>
+		<script src="js/webviewGroup.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init();
+			mui.plusReady(function() {
+				var group = new webviewGroup("tab-top-webview-main-PD.html", {
+					items: [{
+						id: "sub2_PANDIAN_finish.html", //这是子页1的路径
+						url: "sub2_PANDIAN_finish.html",
+						extras: {}
+					}, {
+						id: "sub2_PANDIAN_unfinish.html", //这是子页2的路径
+						url: "sub2_PANDIAN_unfinish.html",
+						extras: {}
+					}],
+					onChange: function(obj) {
+						var c = document.querySelector(".mui-control-item.mui-active");
+						if(c) {
+							c.classList.remove("mui-active");
+						}
+						document.querySelector(".mui-scroll .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")").classList.add("mui-active");
+					}
+				});
+				mui(".mui-scroll").on("tap", ".mui-control-item", function(e) {
+					var wid = this.getAttribute("data-wid");
+					group.switchTab(wid);
+				});
+
+			});
+			mui.back = function() {
+				var _self = plus.webview.currentWebview();
+				_self.close("auto");
+			}
+		</script>
+		<script type="text/javascript">
+			var CHUKUDom = document.getElementById("#pandian");
+			CHUKUDom.addEventListener("tap", function() {
+				mui.openWindow({
+					url: "sub2_check_main.html",
+					id: "sub2_check_main.html"
+				})
+			})
+		</script>
+
+	</body>
+
+</html>

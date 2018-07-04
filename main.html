@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<body>
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title">扬网软件</h1>
+	</header>
+	
+	
+		
+	  
+	  
+
+
+	
+	
+	<nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active" href="sub1.html">
+	        <span class="mui-icon mui-icon-chat"></span>
+	        <span class="mui-tab-label">资讯</span>
+	    </a>
+	    <a class="mui-tab-item" href="sub2.html" >
+	        <span class="mui-icon mui-icon-home"  ></span>
+	        <span class="mui-tab-label">功能</span>
+	    </a>
+	   
+	    <a class="mui-tab-item" href="sub3.html">
+	        <span class="mui-icon mui-icon-person"></span>
+	        <span class="mui-tab-label">我的</span>
+	    </a>
+	</nav>
+</body>
+</html>
+<script type="text/javascript">
+	var subPages=['sub1.html','sub2.html','sub3.html'];
+	var subPageStyle={
+		top:'44px',
+		bottom:'50px'
+	};
+	var aniShow={};
+	mui.plusReady(function(){
+		var self=plus.webview.currentWebview();
+		for (var i=0; i<subPages.length;i++) {
+			var sub=plus.webview.create(subPages[i],subPages[i],subPageStyle)
+			sub.hide();
+			self.append(sub);
+		}
+		plus.webview.show(subPages[0]);
+	})
+	mui(".mui-bar-tab").on("tap","a",function(e){
+		var tagPage=this.getAttribute("href");
+		plus.webview.show(tagPage,"fade-in",100);
+		
+	})
+	
+mui.oldback = mui.back;
+var clickNum = 0;
+mui.back = function(event){
+   clickNum++;
+   if(clickNum > 1){
+       plus.runtime.quit();
+   }else{
+       mui.toast("再按一次退出应用");
+   }
+   setTimeout(function(){
+       clickNum = 0
+   },1000);
+        return false;
+}
+
+
+</script>
+<script>
+
+</script>

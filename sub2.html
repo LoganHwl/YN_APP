@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		
+		<link href="css/mui.min.css" rel="stylesheet" /> 
+		<link href="css/sub2_issue_main.css" rel="stylesheet" />
+        <script src="js/mui.min.js"></script>      
+        <script src="js/jquery.min.js"></script>
+        
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		
+	  
+	  <header class="mui-bar mui-bar-nav" style="background-color: #00C3F2;box-shadow: none;">  
+    <!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->  
+    <h1 class="mui-title" style="color:#fff; font-size: 18px;left: 60px;right: 60px;">功能列表</h1>  
+</header>  
+<div class="mui-content">  
+<!--触发字符：mgrid-->  
+        <ul class="mui-table-view mui-grid-view mui-grid-9">  
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" id="CHUKU"><a> 
+                    <span class="mui-icon mui-icon-compose" style="color: #E83E8C;"></span>  
+                    <div class="mui-media-body" >出库管理</div></a></li>  
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" style="color: #218838;" id="PANDIAN"><a>  
+                    <span class="mui-icon mui-icon-spinner"></span>  
+                    <div class="mui-media-body">盘点管理</div></a></li>  
+            <
+           <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">  
+                    <span class="mui-icon mui-icon-more"></span>  
+                    <div class="mui-media-body">more</div></a></li>  
+        </ul>         
+</div> 
+	</body>
+
+  
+<script type="text/javascript">
+	
+  var PANDIANDom=document.getElementById("PANDIAN"); 
+  var CHUKUDom=document.getElementById("CHUKU");
+   CHUKUDom.addEventListener("tap",function(){
+		mui.openWindow({
+			url:"tab-top-webview-main.html",
+			id:"tab-top-webview-main.html"
+		});
+		
+	});
+	PANDIANDom.addEventListener("tap",function(){
+		mui.openWindow({
+			url:"tab-top-webview-main-PD.html",
+			id:"tab-top-webview-main-PD.html"
+		});
+		
+	});
+	</script>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/sub2_issue_main.css" rel="stylesheet" />
+		<style>
+			input:-ms-input-placeholder {
+				/* Internet Explorer 10+*/
+				color: #999;
+				font-size: 14px;
+			}
+			
+			.input_control {
+				width: 300px;
+				margin: 10px auto;
+			}
+			.input { padding: 5px; margin: 0; border: 1px solid #beceeb; }
+			.clear { display: none; position: absolute; width: 16px; height: 16px; margin: 6px 0 0 -20px; background: url(clear.png);}
+			.input::-ms-clear { display: none; }
+			.input:valid + .clear { display: inline; }
+			.border{border-bottom:solid 1px #CCDFE8; margin-right: 20px;margin-left: 10px}
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<button id="BACK" class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<h1 class="mui-title">发料出库</h1>
+			<!--<button id="#Update" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">更				新</button>-->
+		</header>
+		<div class="mui-content">
+
+			<form id="input_form" name="input" action="" method="get" class="mui-input-group">
+
+				<!--<div class="mui-input-row">
+					<label>材料归属：</label>
+					<input type="text" id="belong" class="mui-input-clear" onchange="ValueChange">
+				</div>-->
+				<div class="mui-input-row border" >
+					<label>材料编号：</label>
+					<input type="text" id="mstkno"  name="input1" onkeyup="" class="input">
+					<button type="button" id="QR_Code" style="position:absolute;top:12px; right:-22px; width: 28%;" class="mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">扫一扫</button>
+
+				</div>
+
+				<div class="mui-input-row border">
+					<label onclick="ShowText()">材料名称：</label>
+					<input type="text" id="materialcn" onclick="ShowText()" name="input2"  class="input">
+				</div>
+				<div class="mui-input-row border">
+					<label>样品单号：</label>
+					<input type="text" id="sampleno" class="mui-input-clear" onkeyup="">
+					<button type="button" id="QR_Code2" style="position:absolute;top:12px; right:-22px; width: 28%;" class="mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">扫一扫</button>
+				</div>
+				<div class="mui-input-row border">
+					<label>型体号码：</label>
+					<input type="text" id="styleno" class="mui-input-clear">
+				</div>
+				<div class="mui-input-row border">
+					<label>库存数量：</label>
+					<input type="text" id="scqty" class="mui-input-clear" disabled="true">
+				</div>
+				<div class="mui-input-row border">
+					<label>出库数量：</label>
+					<input type="text" onkeyup="value=value.replace(/[^\d]/g,'')" id="outqty" class="mui-input-clear">
+				</div>
+				<!--尺码选择框-->
+				<div id="size_div" name="size_div" class="input_control" style="display:'';">
+
+				</div>
+
+			</form>
+			<div>
+				<!--<a id="last" href="JavaScript:history.go(-1)" >返回上一步</a>-->
+				<button id="last" type="button" class="mui-btn mui-btn-primary" style="margin-bottom:250px; position:relative; top:0px; height:50px;left:25px; width: 35%;">上一个</button>
+				<button class="mui-btn mui-btn-success" id="next" type="button" style="margin-bottom:0px; position:relative; height:50px;right:-85px; width: 35%;">下一个</button>
+
+			</div>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab" id="ok">
+			<button id="ok" class="mui-btn mui-btn-success mui-btn-outlined" type="submit" style="position:relative; top:0px; height:50px; width: 100%;font-size:20px">完成</button>
+		</nav>
+
+		<script src="js/mui.min.js"></script>
+
+		<script src="js/global.js"></script>
+		<script src="js/jquery-1.8.2.min.js"></script>
+		<script src="js/submit.js"></script>
+		<!--<script src="js/duplicateElement.min.js"></script>-->
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+		<!--从本地存储中获取数据-->
+		<script>
+			var item = JSON.parse(localStorage.getItem('user_info'))
+			$('#belong').val(item.incnm)
+			//			alert(localStorage.getItem('GKEY'))
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('input[id=mstkno]').change(function() {
+					if($.trim($("#mstkno").val()) != "") {
+						var mr_gkey = localStorage.getItem('MR001gkey');
+						mui.ajax(server + '/api/Outbound/vtsk001_1', {
+							dataType: 'json', //服务器返回json格式数据
+							type: 'get', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							data: {
+								mstkno: this.value,
+								mr001gkey: mr_gkey
+							},
+							success: function(json) {
+
+								if(json == null) {
+									alert('无此材料编号，请确认')
+								} else if(json != null && json.mszsct == '0') {
+
+									$('#size_div').hide();
+									$('#outqty').attr("disabled", false);
+
+									localStorage.setItem('QR_code', JSON.stringify(json));
+									$('#materialcn').val(json.materialcn)
+									$('#scqty').val(json.scqty)
+									
+									//移除尺码列表
+									$("input[name='size']").remove();
+									
+									//材料名称有值时不可编辑
+									if($('#materialcn').val() != '') {
+										$('#materialcn').attr("readonly", 'readonly');
+									};
+									//									alert(JSON.parse(json))
+								} else if(json.mszsct == '1') {
+									$('#outqty').attr("disabled", true);
+									localStorage.setItem('QR_code', JSON.stringify(json));
+									mui.ajax(server + '/api/Outbound/vtsk002', {
+										dataType: 'json', //服务器返回json格式数据
+										type: 'get', //HTTP请求类型
+										async: false,
+										data: {
+											barcode: json.barcode,
+											gkey: json.gkey
+										},
+										success: function(json) {
+											$('#size_div').show()
+											localStorage.setItem('SIZE', JSON.stringify(json));
+
+											shuaxin_size();
+										},
+										error: function(xhr, type, errorThrown) {
+											alert(errorThrown);
+										},
+									})
+								}
+							}
+						})
+					}
+				});
+
+			});
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('input[id=sampleno]').change(function() {
+					if($.trim($("#sampleno").val()) != "") {
+						var mr_gkey = localStorage.getItem('MR001gkey');
+						mui.ajax(server + '/api/Outbound/vsmpl', {
+							dataType: 'json', //服务器返回json格式数据
+							type: 'get', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							data: {
+								sampleno: this.value,
+								mr001gkey: mr_gkey
+							},
+							success: function(json) {
+								if(json == null) {
+									alert('无此样品单号，请确认')
+								} else {
+
+									localStorage.setItem('QR_code2', JSON.stringify(json));
+									var items_sno = json;
+
+									$('#styleno').val(items_sno.styleno)
+								}
+							}
+						})
+					}
+				});
+
+			});
+		</script>
+
+		<script type="text/javascript">
+			var QRDom = document.getElementById("QR_Code");
+			var QRDom2 = document.getElementById("QR_Code2");
+			QRDom.addEventListener("tap", function() {
+				mui.openWindow({
+					url: "QR_Code.html",
+					id: "QR_Code.html"
+				})
+			});
+
+			QRDom2.addEventListener("tap", function() {
+				mui.openWindow({
+					url: "QR_Code2.html",
+					id: "QR_Code2.html"
+				})
+			})
+		</script>
+
+		<!--從本地獲取VTSK001相應數據-->
+		<script type="text/javascript">
+			//在父界面接收子界面的传递过来的值
+			function shuaxin() {
+
+				var VTSK001 = JSON.parse(localStorage.getItem('QR_code'));
+				$('#outqty').val('');
+				$('#materialcn').val(VTSK001.materialcn);
+				$('#mstkno').val(VTSK001.mstkno);
+				$('#scqty').val(VTSK001.scqty);
+				if(VTSK001.mszsct == '0') {
+					$('#size_div').hide();
+					$('#outqty').attr("disabled", false);
+				} else if(VTSK001.mszsct == '1') {
+					$('#outqty').attr("disabled", true);
+				};
+				if($('#materialcn').val() != '') {
+					$('#materialcn').attr("readonly", "readonly");
+				}
+			} 
+		</script>
+
+		<!--從本地獲取imc0021相應數據-->
+		<script type="text/javascript">
+			//在父界面接收子界面的传递过来的值
+
+			function shuaxin2() {
+				var IMC0021 = JSON.parse(localStorage.getItem('QR_code2'));
+				$('#styleno').val(IMC0021.styleno);
+				$('#sampleno').val(IMC0021.sampleno);
+
+			}
+		</script>
+
+		<!--获取尺码数据-->
+		<script>
+			function shuaxin_size() {
+				var str = "";
+				$('#size_div').show();
+				var VTSK002 = JSON.parse(localStorage.getItem('SIZE'));
+				for(i = 0; i < VTSK002.length; i++) {
+					str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
+					str += '<div style="font-size:18px; margin: 10px 0px 0px -10px;" >';
+					str += '<label> ' + VTSK002[i].size + '/' + VTSK002[i].scqty + ':     ';
+					//						str += '<input id="input'+i+'" '+' name="size" '+' placeholder='+'库存数量:'+ VTSK002[i].scqty + '>';	
+					str += '<input type="text" name="size"' + 'id="input' + i + '"' + 'placeholder="库存数量' + VTSK002[i].scqty + '" />'
+					str += '</label>';
+					str += '</div>';
+					str += '</li>';
+				}
+				$("#size_div").html(str);
+			}
+		</script>
+
+	</body>
+
+</html>
+
+<script>
+	$(document).ready(function() {
+		$(".input_control").on('input propertychange', function() {
+			var sum = 0;
+			$("input[name='size']").each(function() {
+				var r = /^-?\d+$/;　 //正整数 
+				if($(this).val() != '' && !r.test($(this).val())) {
+					$(this).val(""); //正则表达式不匹配置空 
+				} else if($(this).val() != '') {
+					sum += parseInt($(this).val());
+					if(sum > $("#scqty").val()) {
+						alert('出库数量不能大于库存数量！');
+						return false
+					}
+				}
+				document.getElementById("outqty").value = sum;
+			});
+
+		})
+	})
+</script>
+
+<!--设置底部导航栏不被手机键盘顶起-->
+<script>
+	//获取原始窗口的高度
+	var originalHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+	window.onresize = function() {
+
+		//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+		var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+		if(resizeHeight * 1 < originalHeight * 1) { //resizeHeight<originalHeight证明窗口被挤压了
+
+			plus.webview.currentWebview().setStyle({
+				height: originalHeight
+			});
+
+		}
+	}
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('#mstkno').on('input propertychange', function() {
+			var count = $(this).val().length;
+			if(count < 1) {
+				$('#size_div').show();
+
+				$('#materialcn').val("");
+				$('#scqty').val("");
+
+			}
+		});
+		$('#sampleno').on('input propertychange', function() {
+			var count = $(this).val().length;
+			if(count < 1) {
+				$('#styleno').val("");
+			}
+		});
+
+	})
+</script>
+
+<!--獲取imc0021gkey-->
+<script>
+	$('#next').on('tap', function() {
+		mui.ajax({
+			type: "get",
+			url: server + "/api/Info/gkey",
+			async: false,
+			success: function(data) {
+				localStorage.setItem('imc0021GKEY', data);
+
+			}
+		});
+	})
+</script>
+
+<script>
+	// 			document.getElementById("#Update").style.display = "none";
+	$('#ok').on('tap', function() {
+		mui.ajax({
+			type: "get",
+			url: server + "/api/Info/gkey",
+			async: false,
+			success: function(data) {
+				localStorage.setItem('imc0021GKEY', data);
+
+			}
+		});
+	})
+</script>
+
+<!--点击显示材料名称全部信息-->
+<script>
+	function ShowText(){
+			if($('#materialcn').val()!=''){
+				alert($('#materialcn').val())	
+			}
+			
+	}
+</script>
