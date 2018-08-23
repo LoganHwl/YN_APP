@@ -17,7 +17,7 @@
 				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
 			<h1 class="mui-title">盘点管理</h1>
 			
-			<button id="#pandian" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">新增盘点</button>
+			<button id="#pandian" style="border: none;top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">新增盘点</button>
 		</header>
 
 		<div class="mui-content">
@@ -25,11 +25,11 @@
 				<div style="padding: 5px 10px;">
 					<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 						<div class="mui-scroll">
-							<a class="mui-control-item mui-active" href="#item1mobile" data-wid="sub2_PANDIAN_finish.html">
-								已完成
-							</a>
-							<a class="mui-control-item" href="#item2mobile" data-wid="sub2_PANDIAN_unfinish.html">
+							<a class="mui-control-item mui-active" href="#item1mobile" data-wid="sub2_PANDIAN_unfinish.html">
 								未完成
+							</a>
+							<a class="mui-control-item" href="#item2mobile" data-wid="sub2_PANDIAN_finish.html">
+								已完成
 							</a>
 						</div>
 					</div>
@@ -41,16 +41,18 @@
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/webviewGroup.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			mui.init();
+			mui.init({
+				swipeBack: false //关闭-右滑关闭功能
+			});
 			mui.plusReady(function() {
 				var group = new webviewGroup("tab-top-webview-main-PD.html", {
 					items: [{
-						id: "sub2_PANDIAN_finish.html", //这是子页1的路径
-						url: "sub2_PANDIAN_finish.html",
+						id: "sub2_PANDIAN_unfinish.html", //这是子页1的路径
+						url: "sub2_PANDIAN_unfinish.html",
 						extras: {}
 					}, {
-						id: "sub2_PANDIAN_unfinish.html", //这是子页2的路径
-						url: "sub2_PANDIAN_unfinish.html",
+						id: "sub2_PANDIAN_finish.html", //这是子页2的路径
+						url: "sub2_PANDIAN_finish.html",
 						extras: {}
 					}],
 					onChange: function(obj) {
@@ -75,10 +77,13 @@
 		<script type="text/javascript">
 			var CHUKUDom = document.getElementById("#pandian");
 			CHUKUDom.addEventListener("tap", function() {
+				
 				mui.openWindow({
 					url: "sub2_check_main.html",
 					id: "sub2_check_main.html"
-				})
+				});
+				
+					
 			})
 		</script>
 

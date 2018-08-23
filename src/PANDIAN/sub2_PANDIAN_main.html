@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!--盘点管理主页面（新增imc0010）-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+
+		<style>
+			input:-ms-input-placeholder {
+				/* Internet Explorer 10+*/
+				color: #999;
+				font-size: 14px;
+			}
+			
+			.input_control {
+				width: 300px;
+				margin: 10px auto;
+			}
+			
+			.border {
+				border-bottom: solid 1px #CCDFE8;
+				margin-right: 20px;
+				margin-left: 10px
+			}
+		</style>
+		<!--获取系统日期-->
+		<SCRIPT language=JavaScript>
+			function tick() {
+				var years, months, days, hours, minutes, seconds;
+				var intYears, intMonths, intDays, intHours, intMinutes, intSeconds;
+				var today;
+				today = new Date(); //系统当前时间
+				intYears = today.getFullYear(); //得到年份,getFullYear()比getYear()更普适
+				intMonths = today.getMonth() + 1; //得到月份，要加1
+				intDays = today.getDate(); //得到日期
+				intHours = today.getHours(); //得到小时 
+				intMinutes = today.getMinutes(); //得到分钟
+				intSeconds = today.getSeconds(); //得到秒钟
+				years = intYears + "-";
+
+				if(intMonths < 10) {
+					months = "0" + intMonths + "-";
+				} else {
+					months = intMonths + "-";
+				}
+				if(intDays < 10) {
+					days = "0" + intDays + " ";
+				} else {
+					days = intDays + " ";
+				}
+				if(intHours == 0) {
+					hours = "00:";
+				} else if(intHours < 10) {
+					hours = "0" + intHours + ":";
+				} else {
+					hours = intHours + ":";
+				}
+				if(intMinutes < 10) {
+					minutes = "0" + intMinutes + ":";
+				} else {
+					minutes = intMinutes + ":";
+				}
+				if(intSeconds < 10) {
+					seconds = "0" + intSeconds + " ";
+				} else {
+					seconds = intSeconds + " ";
+				}
+				timeString = years + months + days + hours + minutes + seconds;
+				Clock.innerHTML = timeString;
+				//				window.setTimeout("tick();", 1000);
+			}
+			//window.onload表示页面加载完了后（包括dom和js），再执行函数里面的内容
+			window.onload = tick;
+		</SCRIPT>
+
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/sub2_issue_main.css" rel="stylesheet" />
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/global.js"></script>
+	</head>
+
+	<body>
+		<!--页面标题栏-->
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<!--返回按钮-->
+			<button id="BACK" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<!--<button id="#reload" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">刷				新</button>-->
+			<h1 class="mui-title">盘点管理</h1>
+
+		</header>
+		<!--数据表单内容-->
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row border">
+					<label>归属：</label>
+					<input type="text" id="incnm" class="mui-input-clear">
+				</div>
+				<div class="mui-input-row border">
+					<label>盘点批号：</label>
+					<input type="text" id="batchno" class="mui-input-clear">
+				</div>
+
+				<div class="mui-input-row border">
+					<label>仓库：</label>
+					<li class="mui-table-view-cell">
+						<select class="mui-select" ; name='whnm' id='whnm' ; style="background-color: #C0C0C0; width:auto; margin: 0px 0px 0px -30px;">
+						</select>
+					</li>
+				</div>
+
+				<div class="mui-input-row border">
+					<label>盘点日期：</label>
+					<span id="Clock" style='display:block;margin:18px auto;'></span>
+					<!--<input id="Clock" class="mui-input-clear" placeholder="imc0020.issuedate(自动生成系统日期)">-->
+				</div>
+				<div class="mui-input-row border">
+					<label>管理员：</label>
+					<input type="text" id="usercn" class="mui-input-clear" readonly>
+				</div>
+
+			</form>
+		</div>
+		<!--底部导航栏-->
+		<nav class="mui-bar mui-bar-tab" id="queren">
+			<!--确定按钮-->
+			<a class="mui-tab-item mui-active">
+				<span class="mui-tab-label" style="font-size:20px">确定</span>
+			</a>
+		</nav>
+
+		<script>
+			//ajax请求盘点批号
+			$.ajax({
+				type: "get",
+				url: server + "/api/Info/batchno?flags=p",
+				async: false,
+				success: function(data) {
+					$('#batchno').val(data)
+				}
+			});
+			var item = JSON.parse(localStorage.getItem('user_info'));
+			$.ajax({ //根据登陆者的ba005gkey请求仓库等相关数据
+				type: "get",
+				url: server + "/api/Info/vtmr001",
+				async: false,
+				data: {
+					gkey: item.ba005gkey
+				},
+				success: function(data) {
+					var html;
+					$.each(data, function(i, v) {
+						html += '<option value="' + v.mr001gkey + '">' + v.whnm + '</option>'
+					});
+					$('#whnm').html(html)
+
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
+<!--从本地存储中获取数据-->
+<script>
+	//从登陆者信息中获取归属和仓管员并填入页面对应栏位
+	var item = JSON.parse(localStorage.getItem('user_info'))
+	$('#incnm').val(item.incnm)
+	$('#usercn').val(item.usercn)
+</script>
+
+<script type="text/javascript">
+	mui.init();
+	var chukuDom = document.getElementById("queren");
+	//点击“确定”按钮，执行以下逻辑
+	chukuDom.addEventListener("tap", function(g) {
+
+		var inputValue = document.getElementById("whnm").value;
+		//本地存mr001gkey
+		localStorage.setItem('MR001gkey', inputValue);
+		mui.ajax({ //根据batchno到后台检测当前页面数据是否已存在
+			type: "get",
+			url: server + "/api/Outbound/imc0010",
+			async: false,
+			data: {
+				batchno: $("#batchno").val()
+			},
+			success: function(data) {
+				if(data == 'null' && inputValue != '') { //不存在对应数据且仓库不为空
+					//獲取imc0010gkey
+					mui.ajax({
+						type: "get",
+						url: server + "/api/Info/gkey",
+						async: false,
+						success: function(data) {
+							localStorage.setItem('PDGKEY', data);
+
+						}
+					});
+
+					//发料出库 ( 实际为新增一笔imc0020)
+					mui.ajax({
+						type: "post",
+						url: server + "/api/Outbound/imc0010",
+						async: false,
+						headers: {
+							'Content-Type': 'application/json-patch+json'
+						},
+						data: {
+							gkey: localStorage.getItem('PDGKEY'),
+							batchno: $('#batchno').val(),
+							ba005gkey: item.ba005gkey,
+							mr001gkey: inputValue,
+							Clock: $('#Clock').val,
+							flag: '0',
+							es101gkey: item.es101gkey,
+
+						},
+						success: function(res) { //后台返回信息处理
+							//				alert(localStorage.getItem('GKEY'));
+							switch(res) {
+
+								case 'batchno_null':
+									alert('盘点批号不可为空！');
+									return;
+									break;
+								case 'ba005gkey_null':
+									alert('ba005gkey为空！');
+									return;
+									break;
+								case 'es101gkey_null':
+									alert('es101gkey为空！');
+									return;
+									break;
+								case 'mr001gkey_null':
+									alert('mr001gkey为空！');
+									return;
+									break;
+								case 'error':
+									alert('error！');
+									return;
+									break;
+								case 'ok':
+									//数据成功保存到后台后，跳轉到‘盘点管理’页面				
+									mui.openWindow({
+										url: "/src/PANDIAN/sub2_PANDIAN_list.html",
+										id: "sub2_PANDIAN_list"
+									});
+									break;
+								default:
+									break;
+							}
+						}
+					})
+				} else if(data.mr001gkey != inputValue) { //后台已存在对应数据，但仓库不对应
+					//		alert(JSON.stringify(data.mr001gkey))
+					mui.ajax({ //更新数据到后台
+						type: "put",
+						url: server + "/api/Outbound/imc0010",
+						async: false,
+						headers: {
+							'Content-Type': 'application/json-patch+json'
+						},
+						data: {
+							gkey: localStorage.getItem('PDGKEY'),
+							batchno: $('#batchno').val(),
+							ba005gkey: item.ba005gkey,
+							mr001gkey: inputValue,
+							Clock: $('#Clock').val,
+							flag: '0',
+							es101gkey: item.es101gkey,
+
+						},
+						success: function(res) {
+							switch(res) {
+								case 'batchno_null':
+									alert('盘点批号不可为空！');
+									return;
+									break;
+								case 'ba005gkey_null':
+									alert('ba005gkey为空！');
+									return;
+									break;
+								case 'es101gkey_null':
+									alert('es101gkey为空！');
+									return;
+									break;
+								case 'mr001gkey_null':
+									alert('mr001gkey为空！');
+									return;
+									break;
+								case 'error':
+									alert('error！');
+									return;
+									break;
+								case 'ok':
+									//頁面跳轉				
+									mui.openWindow({
+										url: "/src/PANDIAN/sub2_PANDIAN_list.html",
+										id: "sub2_PANDIAN_list"
+									});
+									break;
+								default:
+									break;
+							}
+						}
+					})
+
+				} else if(data != 'null' && data.mr001gkey == inputValue) { //页面数据已存在后台
+					//頁面跳轉				
+					mui.openWindow({
+						url: "/src/PANDIAN/sub2_PANDIAN_list.html",
+						id: "sub2_PANDIAN_list"
+					});
+
+				} else if($('select[name="whnm"]').val() == '') {
+					alert('请选择仓库！')
+				}
+			}
+		})
+	})
+</script>
+<script>
+	//返回按钮逻辑
+	$('#BACK').on('tap', function() {
+
+		plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+		mui.back()
+	})
+</script>

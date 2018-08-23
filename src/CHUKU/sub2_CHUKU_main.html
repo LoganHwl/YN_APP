@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!--发料出库主页面-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<!--<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />-->		
+		<meta name="viewport" http-equiv="Content-Type" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/sub2_issue_main.css" rel="stylesheet" />
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/global.js"></script>
+		<style>
+			input:-ms-input-placeholder {
+				/* Internet Explorer 10+*/
+				color: #999;
+				font-size: 14px;
+			}
+			
+			.input_control {
+				width: 300px;
+				margin: 10px auto;
+			}
+			
+			.border {
+				border-bottom: solid 1px #CCDFE8;
+				margin-right: 20px;
+				margin-left: 10px
+			}
+		</style>
+		<!--获取系统日期-->
+		<SCRIPT language=JavaScript>
+		//通过tick方法获取系统时间并转换成自己想要的格式
+			function tick() {
+				var years, months, days, hours, minutes, seconds;
+				var intYears, intMonths, intDays, intHours, intMinutes, intSeconds;
+				var today;
+				today = new Date(); //系统当前时间
+				intYears = today.getFullYear(); //得到年份,getFullYear()比getYear()更普适
+				intMonths = today.getMonth() + 1; //得到月份，要加1
+				intDays = today.getDate(); //得到日期
+				intHours = today.getHours(); //得到小时 
+				intMinutes = today.getMinutes(); //得到分钟
+				intSeconds = today.getSeconds(); //得到秒钟
+				years = intYears + "-";
+
+				if(intMonths < 10) {
+					months = "0" + intMonths + "-";
+				} else {
+					months = intMonths + "-";
+				}
+				if(intDays < 10) {
+					days = "0" + intDays + " ";
+				} else {
+					days = intDays + " ";
+				}
+				if(intHours == 0) {
+					hours = "00:";
+				} else if(intHours < 10) {
+					hours = "0" + intHours + ":";
+				} else {
+					hours = intHours + ":";
+				}
+				if(intMinutes < 10) {
+					minutes = "0" + intMinutes + ":";
+				} else {
+					minutes = intMinutes + ":";
+				}
+				if(intSeconds < 10) {
+					seconds = "0" + intSeconds + " ";
+				} else {
+					seconds = intSeconds + " ";
+				}
+				timeString = years + months + days + hours + minutes + seconds;
+				Clock.innerHTML = timeString;
+				//				window.setTimeout("tick();", 1000);
+			}
+			window.onload = tick;
+		</SCRIPT>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<button id="BACK" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<!--<button id="#reload" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">刷				新</button>-->
+			<h1 class="mui-title">发料出库主页面</h1>
+
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row border">
+					<label>归属：</label>
+					<input type="text" id="incnm" class="mui-input-clear">
+				</div>
+				<div class="mui-input-row border">
+					<label>出料批号：</label>
+					<input type="text" id="batchno" class="mui-input-clear">
+				</div>
+
+				<div class="mui-input-row border">
+					<label>仓库：</label>
+					<li class="mui-table-view-cell">
+						<select class="mui-select" ; name='whnm' id='whnm' ; style="background-color: #C0C0C0; width:auto; margin: 0px 0px 0px -30px;">
+						</select>
+					</li>
+				</div>
+
+				<div class="mui-input-row border">
+					<label>出库日期：</label>
+					<span id="Clock" style='display:block;margin:18px auto;'></span>
+					<!--<input id="Clock" class="mui-input-clear" placeholder="imc0020.issuedate(自动生成系统日期)">-->
+				</div>
+				<div class="mui-input-row border">
+					<label>仓管员：</label>
+					<input type="text" id="usercn" class="mui-input-clear" readonly>
+				</div>
+
+			</form>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab" id="queren">
+			<a class="mui-tab-item mui-active">
+				<span class="mui-tab-label" style="font-size:20px">确定</span>
+			</a>
+		</nav>
+
+		<script>
+			//通过ajax请求到后台获取batchno
+			$.ajax({
+				type: "get",
+				url: server + "/api/Info/batchno?flags=f",
+				async: false,
+				success: function(data) {
+					$('#batchno').val(data)
+				}
+			});
+			//从本地缓存获取登陆者的相关信息
+			var item = JSON.parse(localStorage.getItem('user_info'));
+			//根据登陆者ba005gkey到后台请求与仓库相关的数据回来
+			$.ajax({
+				type: "get",
+				url: server + "/api/Info/vtmr001",
+				async: false,
+				data: {
+					gkey: item.ba005gkey
+				},
+				success: function(data) {
+					//如果成功返回数据，则将仓库内容展示到select框中
+					var html;
+					$.each(data, function(i, v) {
+						html += '<option value="' + v.mr001gkey + '">' + v.whnm + '</option>'
+					});
+					$('#whnm').html(html)
+
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
+<!--从本地存储中获取数据-->
+<script>
+	var item = JSON.parse(localStorage.getItem('user_info'));
+	//将数据展示到页面相应位置
+	$('#incnm').val(item.incnm)
+	$('#usercn').val(item.usercn)
+</script>
+
+<script type="text/javascript">
+	mui.init();
+	//获取‘确认’按钮
+	var chukuDom = document.getElementById("queren");
+	//点击‘确认’按钮后进入方法中执行逻辑
+	chukuDom.addEventListener("tap", function(g) {
+		var inputValue = document.getElementById("whnm").value;
+		//本地存mr001gkey
+		localStorage.setItem('MR001gkey', inputValue);
+		//根据batchno到后台查找是否有对应信息
+		mui.ajax({
+			type: "get",
+			url: server + "/api/Outbound/imc0020",
+			async: false,
+			data: {
+				batchno: $("#batchno").val()
+			},
+			success: function(data) {
+				//如果返回的数据为空，则执行if里面的逻辑
+				if(data == 'null' && inputValue != '') {
+					//獲取imc0020gkey
+					mui.ajax({
+						type: "get",
+						url: server + "/api/Info/gkey",
+						async: false,
+						success: function(data) {
+							localStorage.setItem('GKEY', data);
+
+						}
+					})
+
+					//发料出库 ( 实际为新增一笔imc0020)
+					mui.ajax({
+						type: "post",
+						url: server + "/api/Outbound/imc0020",
+						async: false,
+						headers: {
+							'Content-Type': 'application/json-patch+json'
+						},
+						data: {
+							gkey: localStorage.getItem('GKEY'),
+							batchno: $('#batchno').val(),
+							ba005gkey: item.ba005gkey,
+							mr001gkey: inputValue,
+							Clock: $('#Clock').val,
+							flag: '0',
+							es101gkey: item.es101gkey,
+
+						},
+						success: function(res) {
+							//将数据成功传递到后台后，根据后台返回的信息进行判断
+							switch(res) {
+
+								case 'batchno_null':
+									alert('出库批号不可为空！');
+									return;
+									break;
+								case 'ba005gkey_null':
+									alert('ba005gkey为空！');
+									return;
+									break;
+								case 'es101gkey_null':
+									alert('es101gkey为空！');
+									return;
+									break;
+								case 'mr001gkey_null':
+									alert('mr001gkey为空！');
+									return;
+									break;
+								case 'error':
+									alert('error！');
+									return;
+									break;
+								case 'ok':
+									//如果后台返回‘ok’，则跳轉到‘发料出库’页面				
+									mui.openWindow({
+										url: "/src/CHUKU/sub2_CHUKU_list.html",
+										id: "sub2_issue_list01.html"
+									});
+									break;
+								default:
+									break;
+							}
+						}
+					})
+				}else if(data.mr001gkey != inputValue){
+					//如果返回的数据中，mr001gkey与页面当前仓库对应的mr001gkey不匹配，
+					//则将当前页面的数据再次发送到后台进行更新
+					mui.ajax({
+						type: "put",
+						url: server + "/api/Outbound/imc0020",
+						async: false,
+						headers: {
+							'Content-Type': 'application/json-patch+json'
+						},
+						data: {
+							gkey: localStorage.getItem('GKEY'),
+							batchno: $('#batchno').val(),
+							ba005gkey: item.ba005gkey,
+							mr001gkey: inputValue,
+							Clock: $('#Clock').val,
+							flag: '0',
+							es101gkey: item.es101gkey,
+
+						},
+						success: function(res) {
+							switch(res) {
+								case 'batchno_null':
+									alert('出库批号不可为空！');
+									return;
+									break;
+								case 'ba005gkey_null':
+									alert('ba005gkey为空！');
+									return;
+									break;
+								case 'es101gkey_null':
+									alert('es101gkey为空！');
+									return;
+									break;
+								case 'mr001gkey_null':
+									alert('mr001gkey为空！');
+									return;
+									break;
+								case 'error':
+									alert('error！');
+									return;
+									break;
+								case 'ok':
+									//頁面跳轉				
+									mui.openWindow({
+										url: "/src/CHUKU/sub2_CHUKU_list.html",
+										id: "sub2_issue_list01.html"
+									});
+									break;
+								default:
+									break;
+							}
+						}
+					})
+
+				} else if(data != 'null' && data.mr001gkey == inputValue) {
+					//如果返回的数据与页面当前的数据匹配，頁面跳轉				
+					mui.openWindow({
+						url: "/src/CHUKU/sub2_CHUKU_list.html",
+						id: "sub2_issue_list01.html"
+					}); 
+
+				} else if($('select[name="whnm"]').val() == '') {
+					alert('请选择仓库！')
+				}
+			},
+			error:function(){
+				alert('失败')
+			}
+		})
+	})
+</script>
+
+<script>
+</script>
+<script>
+	//返回按钮的功能逻辑
+	$('#BACK').on('tap', function() {
+
+		plus.webview.getWebviewById('sub2_CHUKU_2.html').reload();
+		mui.back()
+	})
+</script>

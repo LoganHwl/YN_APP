@@ -79,7 +79,7 @@
 					page:page,
 					limit:limit,
 					es101gkey: item.es101gkey,
-					mr001gkey: items_2,
+//					mr001gkey: items_2,
 					flag: '0'
 				},
 				success: function(json) {
@@ -96,7 +96,7 @@
 					str += '<ul class="mui-table-view">';
 					for(i = 0; i < items.length; i++) {
 						str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
-						str += '<div id="mtb" ' + ' class="mui-slider-right">';
+						str += '<div id="mtb" ' + ' class="mui-slider-left">';
 						str += '<a class="mui-btn mui-btn-red" onclick="DeleteOne(this,\'' + items[i].gkey + '\')">' + '删除' + '</a> ';
 						str += '</div>';
 						str += '<div class="mui-slider-handle">';
@@ -144,11 +144,11 @@
 		<!--会话存储-->
 		<script>
 			function newDoc(e,id) {
-				localStorage.setItem('GKEY',id);
+				localStorage.setItem('PDGKEY',id);
 //				alert(id);
 				mui.openWindow({
-					url: 'sub2_check_list.html',
-					id: 'sub2_issue_list.html',
+					url: 'sub2_check_list_2.html',
+					id: 'sub2_check_list_2.html',
 					styles: {
 						top: 0,
 						bottom: 0

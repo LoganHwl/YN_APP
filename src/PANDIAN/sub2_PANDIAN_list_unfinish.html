@@ -1,0 +1,517 @@
+<!DOCTYPE HTML>
+<!--未完成的盘点数据操作页-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/sub2_issue_main.css" rel="stylesheet" />
+		<style>
+			input:-ms-input-placeholder {
+				/* Internet Explorer 10+*/
+				color: #999;
+				font-size: 14px;
+			}
+			
+			.input_control {
+				width: 300px;
+				margin: 10px auto;
+			}
+			
+			.input {
+				padding: 5px;
+				margin: 0;
+				border: 1px solid #beceeb;
+			}
+			
+			.clear {
+				display: none;
+				position: absolute;
+				width: 16px;
+				height: 16px;
+				margin: 6px 0 0 -20px;
+				background: url(clear.png);
+			}
+			
+			.input::-ms-clear {
+				display: none;
+			}
+			
+			.input:valid+.clear {
+				display: inline;
+			}
+			
+			.border {
+				border-bottom: solid 1px #CCDFE8;
+				margin-right: 20px;
+				margin-left: 10px
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<button id="BACK" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<h1 class="mui-title">盘点管理</h1>
+		</header>
+		<div class="mui-content">
+
+			<form id="input_form" name="input" action="" method="get" class="mui-input-group">
+				<div class="mui-input-row border">
+					<label>材料编号：</label>
+					<input onkeypress='return /^[0-9a-zA-Z]{0,4}$/.test(this.value)' style="text-transform: uppercase" type="text" id="mstkno" name="input1" onkeyup="" class="input">
+					<button type="button" id="PDQR_Code" style="border: none;position:absolute;top:12px; right:-22px; width: 28%;" class="mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">扫一扫</button>
+
+				</div>
+
+				<div class="mui-input-row border">
+					<label onclick="ShowText()">材料名称：</label>
+					<input type="text" id="materialcn" onclick="ShowText()" name="input2" class="input" readonly>
+				</div>
+
+				<div class="mui-input-row border">
+					<label>库存数量：</label>
+					<input type="text" id="scqty" class="mui-input-clear" disabled="true">
+				</div>
+				<div class="mui-input-row border">
+					<label>盘点数量：</label>
+					<input type="text" maxlength="11" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)" id="tsqty" class="mui-input-clear">
+				</div>
+				<!--尺码选择框-->
+				<div id="size_div" name="size_div" class="input_control" style="display:'';">
+				</div>
+
+			</form>
+			<div>
+				<!--<a id="last" href="JavaScript:history.go(-1)" >返回上一步</a>-->
+				<button id="last" type="button" class="mui-btn mui-btn-primary" style="margin-bottom:250px; position:relative; top:0px; height:50px;left:25px; width: 35%;">上一个</button>
+				<button class="mui-btn mui-btn-success" id="next" type="button" style="margin-bottom:0px; position:relative; height:50px;right:-85px; width: 35%;">下一个</button>
+				<button id="delete" type="button" class="mui-btn mui-btn-primary" style="display: none; border: none; background-color: #BD2130; position:relative; bottom:230px; height:50px;left:25px; width: 35%;">删除此笔</button>
+
+			</div>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab" id="ok">
+			<button id="ok" class="mui-btn mui-btn-success mui-btn-outlined" type="submit" style="position:relative; top:0px; height:50px; width: 100%;font-size:20px">完成</button>
+		</nav>
+
+		<script src="../../js/mui.min.js"></script>
+
+		<script src="../../js/global.js"></script>
+		<script src="../../js/jquery-1.8.2.min.js"></script>
+		<script src="../../js/PDsubmit_2.js"></script>
+		<!--<script src="js/duplicateElement.min.js"></script>-->
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('input[id=mstkno]').change(function() {
+					if($.trim($("#mstkno").val()) != "") {
+						$("#delete").show();
+						var cp_mstkno =	JSON.parse(sessionStorage.getItem('this_mstkno'));
+						if(cp_mstkno){
+									if(this.value == cp_mstkno){
+										alert('同一个批号对应的材料编号不可重复');
+										return
+								}										
+								};
+					sessionStorage.setItem('this_mstkno',JSON.stringify(this.value));
+						var mr_gkey = localStorage.getItem('MR001gkey');
+						mui.ajax(server + '/api/Outbound/vtsk001_1', {
+							dataType: 'json', //服务器返回json格式数据
+							type: 'get', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							data: {
+								mstkno: this.value.toUpperCase(),
+								mr001gkey: mr_gkey
+							},
+							success: function(json) {
+								if(json == null) {
+									alert('无此材料编号，请确认')
+								} else if(json != null && json.mszsct == '0') {
+									$('#materialcn').val(json.materialcn);
+									$('#scqty').val(json.scqty);
+									$("#tsqty").val(json.scqty);
+									$('#size_div').hide();
+									$('#tsqty').attr("disabled", false);
+									localStorage.setItem('PDQR_code', JSON.stringify(json));
+
+									//移除尺码列表
+									$("input[name='size']").remove();
+
+									//材料名称有值时不可编辑
+									if($('#materialcn').val() != '') {
+										$('#materialcn').attr("readonly", 'readonly');
+									};
+
+								} else if(json.mszsct == '1') {
+									$('#materialcn').val(json.materialcn);
+									$('#scqty').val(json.scqty)
+									$("#tsqty").val(json.scqty);
+									$('#tsqty').attr("disabled", true);
+									localStorage.setItem('PDQR_code', JSON.stringify(json));
+									mui.ajax(server + '/api/Outbound/vtsk002', {
+										dataType: 'json', //服务器返回json格式数据
+										type: 'get', //HTTP请求类型
+										async: false,
+										data: {
+											barcode: json.barcode,
+											gkey: json.gkey
+										},
+										success: function(json) {
+											$('#size_div').show();
+											localStorage.setItem('SIZE', JSON.stringify(json));
+
+											shuaxin_size();
+										},
+										error: function(xhr, type, errorThrown) {
+											alert(errorThrown);
+										},
+									})
+								}
+							}
+						})
+					}
+				});
+
+			});
+		</script>
+
+		<script type="text/javascript">
+			var QRDom = document.getElementById("PDQR_Code");
+			QRDom.addEventListener("tap", function() {
+				mui.openWindow({
+					url: "/src/PANDIAN/PDQR_Code_unfinish.html",
+					id: "PDQR_Code_unfinish.html"
+				})
+			})
+		</script>
+
+		<!--從本地獲取VTSK001相應數據-->
+		<script type="text/javascript">
+			//在父界面接收子界面的传递过来的值
+			function shuaxin() {
+				$('#delete').css('display', 'block')
+				$("#tsqty").val('');
+				var VTSK001 = JSON.parse(localStorage.getItem('PDQR_code'));
+				$('#materialcn').val(VTSK001.materialcn);
+				$('#mstkno').val(VTSK001.mstkno);
+				$('#scqty').val(VTSK001.scqty);
+				$("#tsqty").val(VTSK001.scqty);
+				if(VTSK001.mszsct == '0') {
+					$('#size_div').hide();
+					$('#tsqty').attr("disabled", false);
+				} else if(VTSK001.mszsct == '1') {
+					$('#tsqty').attr("disabled", true);
+				};
+				if($('#materialcn').val() != '') {
+					$('#materialcn').attr("readonly", 'readonly');
+				}
+
+			}
+		</script>
+
+		<!--获取尺码数据-->
+		<script>
+			function shuaxin_size() {
+				var str = "";
+				$('#size_div').show();
+				var VTSK002 = JSON.parse(localStorage.getItem('SIZE'));
+				for(i = 0; i < VTSK002.length; i++) {
+					str += '<div class=" border" style="width:100%"  >';
+					str += '<label style="width:16px;height:52px;font-size:16px; margin-left:-15px;"> ' + VTSK002[i].size + '/' + VTSK002[i].scqty + ':     ';
+					str += '<input name="size" style="width:160px;height:52px; font-size:16px;margin-left:-1px;padding:1px" type="text" onkeyup="control(event,this)"  onclick="Compare(this,\'' + VTSK002[i].scqty + '\')" ' + 'id="' + i + '" ' + 'value="' + VTSK002[i].scqty + '"  />'
+					str += '</label>';
+					str += '</div>';
+				}
+				$("#size_div").html(str);
+			};
+		</script>
+		<script>
+			//尺码出库数量输入时判断是否大于该尺码库存量
+			function Compare(g, this_scqty) {
+				localStorage.setItem('VAL', this_scqty);
+			};
+
+			function control(e, num) {
+
+				num.value = num.value.replace(/[^\d.]/g, ''); //清除“数字”和“.”以外的字符  
+				num.value = num.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的  
+				num.value = num.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+
+				num.value = num.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入4个小数  
+				//				if(num.value.indexOf(".") < 0 && num.value != "") { //以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
+				//					alert('123')
+				//					num.value = parseFloat(num.value);
+				//				};
+
+				if(num == 0) {
+					if(num.value.indexOf('.') > -1) {
+						num.value = num.value.substring(0, num.value.length - 1);
+						num.focus();
+					}
+				}
+				if(num.value.indexOf('.') > -1) {
+					if(num.value.split('.')[1].length > num) {
+						num.value = num.value.substring(0, num.value.length - 1);
+						num.focus();
+					}
+				}
+
+				var myinput = localStorage.getItem('VAL')
+				var v = num.value;
+				var count = 0;
+				var arr = [];
+
+				if(Number(v) == '') {
+					//如果当前input框被清空，判断出库总数量是否等于尺码输入总数量
+					$("input[name='size']").each(function() {
+						count += Number($(this).val()) * 100;
+						//如果尺码框的值得总和不等于出库总数量，则令它们相等
+						if(count != $("#tsqty").val()) {
+							$("#tsqty").val(count / 100)
+						}
+						//如果尺码框的值都为零，则清空总出库数量
+						if(count == Number(v)) {
+							$("#tsqty").val('')
+						}
+					});
+
+				} else {
+					$("input[name='size']").each(function() {
+						count += Number($(this).val()) * 100;
+						$("#tsqty").val(count / 100);
+						var ts = String($('#tsqty').val());
+						var nts = Number($('#tsqty').val())
+						if(ts.indexOf('.') != -1) {
+							$('#tsqty').val(nts.toFixed(2))
+						};
+						if(count == 0) {
+							$("#tsqty").val('')
+						};
+						if(count != $("#tsqty").val()) {
+							$("#tsqty").val(count / 100);
+
+						}
+					})
+				}
+
+			};
+		</script>
+
+	</body>
+
+</html>
+
+<script>
+	$(document).ready(function(obj) {
+		//输入框的值改变时触发
+		$("#tsqty").on("input", function(e) {
+			//获取input输入的值
+			var v = $(this).val();
+			var s = String($(this).val());
+			var n = Number($(this).val());
+			var r = /^(((\d*).\d+)|(\d+.(\d*)|\d+))$/;
+			var len1 = s.substr(0, 1);
+
+			//第一位不能是.或者0
+			if(len1 == '.') {
+				alert('首位只能是数字')
+				$(this).val('');
+			};
+			if(s == '00') {
+				alert("首位后面不能输入0");
+				$(this).val(v.substring(0, v.length - 1));
+			}
+			//判断是否符合正则表达式
+			if(r.test(v) == true) {
+
+				if(v != '' && r.test(v) == false) {
+					alert('请输入数字');
+				}
+				if(s.indexOf('.') != -1) {
+					var arr = s.split('.')
+
+					if(arr[0].length > 10) {
+						$(this).val(v.substring(0, v.length - 1));
+						alert('最多只能输入10位整数');
+					};
+					if(arr[1].length > 2) {
+						alert('最多只能输入2位小数！')
+					};
+				} else if(s.indexOf('.') == -1) {
+
+					if(String($(this).val()).length > 10) {
+
+						$(this).val(v.substring(0, v.length - 1));
+						alert('最多只能输入10位整数');
+						//							return
+					}
+
+				};
+			}
+		});
+		$(".input_control").on('input propertychange', function() {
+			$("input[name='size']").each(function() {
+
+				var v = $(this).val();
+				var s = String($(this).val());
+				var n = Number($(this).val());
+				var r = /^(((\d*).\d+)|(\d+.(\d*)|\d+))$/;
+				var len1 = s.substr(0, 1);
+
+				//第一位不能是.或者0
+				if(len1 == '.') {
+					alert('首位只能是数字')
+					$(this).val('');
+				};
+				if(s == '00') {
+					alert("首位后面不能输入0");
+					$(this).val(v.substring(0, v.length - 1));
+				}
+				//判断是否符合正则表达式
+				if(r.test(v) == true) {
+
+					if(v != '' && r.test(v) == false) {
+						alert('请输入数字');
+					}
+					if(s.indexOf('.') != -1) {
+						var arr = s.split('.')
+
+						if(arr[0].length > 10) {
+							$(this).val(v.substring(0, v.length - 1));
+							alert('最多只能输入10位整数');
+						};
+						if(arr[1].length > 2) {
+							alert('最多只能输入2位小数！')
+						};
+					} else if(s.indexOf('.') == -1) {
+
+						if(String($(this).val()).length > 10) {
+
+							$(this).val(v.substring(0, v.length - 1));
+							alert('最多只能输入10位整数');
+							//							return
+						}
+
+					};
+					var ts = String($('#tsqty').val());
+					var nts = Number($('#tsqty').val())
+					if(ts.indexOf('.') != -1) {
+						$('#tsqty').val(nts.toFixed(2))
+					};
+
+				}
+			});
+
+			//盘点数量不能为NaN
+			if($('#tsqty').val() == 'NaN') {
+				$('#tsqty').val('')
+			}
+		})
+	})
+</script>
+
+<!--设置底部导航栏不被手机键盘顶起-->
+<script>
+	//获取原始窗口的高度
+	var originalHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+	window.onresize = function() {
+
+		//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+		var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+		if(resizeHeight * 1 < originalHeight * 1) { //resizeHeight<originalHeight证明窗口被挤压了
+
+			plus.webview.currentWebview().setStyle({
+				height: originalHeight
+			});
+
+		}
+	}
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('#mstkno').on('input propertychange', function() {
+			var count = $(this).val().length;
+			if(count < 1) {
+				$('#size_div').hide();
+
+				$('#materialcn').val("");
+				$('#scqty').val("");
+
+			}
+		});
+		$('#sampleno').on('input propertychange', function() {
+			var count = $(this).val().length;
+			if(count < 1) {
+				$('#styleno').val("");
+			}
+		});
+
+	})
+</script>
+
+<script>
+	// 			document.getElementById("#Update").style.display = "none";
+	$('#ok').on('tap', function() {
+		mui.ajax({
+			type: "get",
+			url: server + "/api/Info/gkey",
+			async: false,
+			success: function(data) {
+				localStorage.setItem('imc0011GKEY', data);
+
+			}
+		});
+
+	})
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('#BACK').on('tap', function() {
+			//先判断input框是否有值	
+			var mno = $("#mstkno").val();
+			var mcn = $("#materialcn").val();
+			var sty = $("#scqty").val();
+			var oty = $("#tsqty").val();
+
+			if((mno != "") || (mcn != "") || (sty != "") || (oty != "")) {
+				mui.confirm("数据尚未保存或提交,是否确定返回?", "警告", ["是", "否"], function(e) {
+					if(e.index == 0) {
+						localStorage.removeItem('PDQR_code');
+						plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+						mui.back();
+					} else if(e.index == 1) {
+						return
+					}
+				});
+			} else {
+				localStorage.removeItem('PDQR_code');
+				plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+				setTimeout(function() {
+					mui.back();
+				}, 500);
+			}
+		})
+	})
+</script>
+
+<!--点击显示材料名称全部信息-->
+<script>
+	function ShowText() {
+		if($('#materialcn').val() != '') {
+			alert($('#materialcn').val())
+		}
+
+	}
+</script>

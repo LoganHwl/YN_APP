@@ -18,34 +18,52 @@
 				width: 300px;
 				margin: 10px auto;
 			}
-			.input { padding: 5px; margin: 0; border: 1px solid #beceeb; }
-			.clear { display: none; position: absolute; width: 16px; height: 16px; margin: 6px 0 0 -20px; background: url(clear.png);}
-			.input::-ms-clear { display: none; }
-			.input:valid + .clear { display: inline; }
-			.border{border-bottom:solid 1px #CCDFE8; margin-right: 20px;margin-left: 10px}
+			
+			.input {
+				padding: 5px;
+				margin: 0;
+				border: 1px solid #beceeb;
+			}
+			
+			.clear {
+				display: none;
+				position: absolute;
+				width: 16px;
+				height: 16px;
+				margin: 6px 0 0 -20px;
+				background: url(clear.png);
+			}
+			
+			.input::-ms-clear {
+				display: none;
+			}
+			
+			.input:valid+.clear {
+				display: inline;
+			}
+			
+			.border {
+				border-bottom: solid 1px #CCDFE8;
+				margin-right: 20px;
+				margin-left: 10px
+			}
 		</style>
 
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav mui-newBar">
-			<button id="BACK" class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<button id="BACK" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
 				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
 			<h1 class="mui-title">盘点管理</h1>
-			<!--<button id="#Update" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">更				新</button>-->
 		</header>
 		<div class="mui-content">
 
 			<form id="input_form" name="input" action="" method="get" class="mui-input-group">
-
-				<!--<div class="mui-input-row">
-					<label>材料归属：</label>
-					<input type="text" id="belong" class="mui-input-clear" onchange="ValueChange">
-				</div>-->
 				<div class="mui-input-row border">
 					<label>材料编号：</label>
 					<input type="text" id="mstkno" name="input1" onkeyup="" class="input">
-					<button type="button" id="PDQR_Code" style="position:absolute;top:12px; right:-22px; width: 28%;" class="mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">扫一扫</button>
+					<button type="button" id="PDQR_Code" style="border: none;position:absolute;top:12px; right:-22px; width: 28%;" class="mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">扫一扫</button>
 
 				</div>
 
@@ -60,11 +78,10 @@
 				</div>
 				<div class="mui-input-row border">
 					<label>盘点数量：</label>
-					<input type="text" onkeyup="value=value.replace(/[^\d]/g,'')" id="tsqty" class="mui-input-clear">
+					<input type="text" maxlength="13" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,4})?/)" id="tsqty" class="mui-input-clear">
 				</div>
 				<!--尺码选择框-->
 				<div id="size_div" name="size_div" class="input_control" style="display:'';">
-
 				</div>
 
 			</form>
@@ -72,6 +89,7 @@
 				<!--<a id="last" href="JavaScript:history.go(-1)" >返回上一步</a>-->
 				<button id="last" type="button" class="mui-btn mui-btn-primary" style="margin-bottom:250px; position:relative; top:0px; height:50px;left:25px; width: 35%;">上一个</button>
 				<button class="mui-btn mui-btn-success" id="next" type="button" style="margin-bottom:0px; position:relative; height:50px;right:-85px; width: 35%;">下一个</button>
+				<button id="delete" type="button" class="mui-btn mui-btn-primary" style="display: none; border: none; background-color: #BD2130; position:relative; bottom:230px; height:50px;left:25px; width: 35%;">删除此笔</button>
 
 			</div>
 		</div>
@@ -81,7 +99,7 @@
 		</nav>
 
 		<script src="js/mui.min.js"></script>
-
+	
 		<script src="js/global.js"></script>
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/PDsubmit.js"></script>
@@ -89,17 +107,11 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 		</script>
-		<!--从本地存储中获取数据-->
-		<!--<script>
-			var item = JSON.parse(localStorage.getItem('user_info'))
-			$('#belong').val(item.incnm)
-//			alert(localStorage.getItem('GKEY'))
-		</script>-->
-
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$('input[id=mstkno]').change(function() {
 					if($.trim($("#mstkno").val()) != "") {
+						$("#delete").show();
 						var mr_gkey = localStorage.getItem('MR001gkey');
 						mui.ajax(server + '/api/Outbound/vtsk001_1', {
 							dataType: 'json', //服务器返回json格式数据
@@ -119,16 +131,17 @@
 									$('#materialcn').val(json.materialcn)
 									$('#scqty').val(json.scqty)
 									$("#tsqty").val('');
-									
+
 									//移除尺码列表
 									$("input[name='size']").remove();
-									
+
 									//材料名称有值时不可编辑
 									if($('#materialcn').val() != '') {
 										$('#materialcn').attr("readonly", 'readonly');
 									};
-									
+
 								} else if(json.mszsct == '1') {
+									$('#tsqty').attr("disabled", true);
 									localStorage.setItem('PDQR_code', JSON.stringify(json));
 									mui.ajax(server + '/api/Outbound/vtsk002', {
 										dataType: 'json', //服务器返回json格式数据
@@ -139,7 +152,7 @@
 											gkey: json.gkey
 										},
 										success: function(json) {
-											$('#size_div').show()
+											$('#size_div').show();
 											localStorage.setItem('SIZE', JSON.stringify(json));
 
 											shuaxin_size();
@@ -171,24 +184,25 @@
 		<script type="text/javascript">
 			//在父界面接收子界面的传递过来的值
 			function shuaxin() {
-
 				$("#tsqty").val('');
 				var VTSK001 = JSON.parse(localStorage.getItem('PDQR_code'));
 				$('#materialcn').val(VTSK001.materialcn);
 				$('#mstkno').val(VTSK001.mstkno);
 				$('#scqty').val(VTSK001.scqty);
+				$("#delete").show();
 				if(VTSK001.mszsct == '0') {
 					$('#size_div').hide();
 					$('#tsqty').attr("disabled", false);
-				}else if(VTSK001.mszsct == '1'){
+				} else if(VTSK001.mszsct == '1') {
 					$('#tsqty').attr("disabled", true);
+					//					$("#size_div").css("display", "block");
+					//					$('#size_div').show(); 
+
 				};
-				if($('#materialcn').val()!=''){
-					$('#materialcn').attr("readonly",'readonly'); 
-				}
-				
-				
-				
+				if($('#materialcn').val() != '') {
+					$('#materialcn').attr("readonly", 'readonly');
+				};
+
 			}
 		</script>
 
@@ -199,18 +213,41 @@
 				$('#size_div').show();
 				var VTSK002 = JSON.parse(localStorage.getItem('SIZE'));
 				for(i = 0; i < VTSK002.length; i++) {
-					str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
-					str += '<div style="font-size:18px; margin: 10px 0px 0px -10px;" >';
-					str += '<label> ' + VTSK002[i].size + '/' + VTSK002[i].scqty + ':     ';
-					//						str += '<input id="input'+i+'" '+' name="size" '+' placeholder='+'库存数量:'+ VTSK002[i].scqty + '>';	
-					str += '<input type="text" name="size"' + 'id="input' + i + '"' + 'placeholder="库存数量' + VTSK002[i].scqty + '" />'
+					str += '<div class=" border" style="width:100%"  >';
+					str += '<label style="width:18px;height:52px;font-size:17px; margin-left:-15px;"> ' + VTSK002[i].size + '/' + VTSK002[i].scqty + ':     ';
+					str += '<input name="size" style="width:180px;height:52px; font-size:16px;margin-left:-10px" type="text" onkeyup="control(event,this)" ' + 'id="' + i + '" ' + 'placeholder="库存数量 ' + VTSK002[i].scqty + '"  />'
 					str += '</label>';
 					str += '</div>';
-					str += '</li>';
 				}
 				$("#size_div").html(str);
-				$('#tsqty').attr("disabled", true);
-			}
+			};
+			
+			
+			function control(e, num) {
+				num.value = num.value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符  
+				num.value = num.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的  
+				num.value = num.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+
+				num.value = num.value.replace(/^(\-)*(\d+)\.(\d\d{0,3}).*$/, '$1$2.$3'); //只能输入4个小数  
+//				if(num.value.indexOf(".") < 0 && num.value != "") { //以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
+//					num.value = parseFloat(num.value);
+//				};
+
+				if(num == 0) {
+					if(num.value.indexOf('.') > -1) {
+						num.value = num.value.substring(0, num.value.length - 1);
+						num.focus();
+					}
+				}
+				if(num.value.indexOf('.') > -1) {
+					if(num.value.split('.')[1].length > num) {
+						num.value = num.value.substring(0, num.value.length - 1);
+						num.focus();
+					}
+				}
+
+				
+			};
 		</script>
 
 	</body>
@@ -218,23 +255,79 @@
 </html>
 
 <script>
-	$(document).ready(function() {
+	$(document).ready(function(obj) {
 		$(".input_control").on('input propertychange', function() {
 			var sum = 0;
 			$("input[name='size']").each(function() {
-				var r = /^-?\d+$/;　 //正整数 
-				if($(this).val() != '' && !r.test($(this).val())) {
-					$(this).val(""); //正则表达式不匹配置空 
-				} else if($(this).val() != '') {
-					sum += parseInt($(this).val());
-					if(sum>$("#scqty").val()){
-						alert('出库数量不能大于库存数量！');
-						return false
+
+				var v = $(this).val();
+				var s = String($(this).val());
+				var n = Number($(this).val());
+				var r = /^(((\d*).\d+)|(\d+.(\d*)|\d+))$/;
+				var len1 = s.substr(0, 1);
+				
+				//第一位不能是.或者0
+				if(len1 == '.'||len1==0) {
+					$(this).val('');
+				};
+				//判断是否符合正则表达式
+				if(r.test(v) == true) {
+					if($(this).val() == '0') {
+						$(this).val('');
+						sum = $("#tsqty").val();
+					};
+
+					if(v != '' && r.test(v) == false) {
+						alert('请输入数字');
+						sum = Number($("#tsqty").val())
 					}
+					if(s.indexOf('.') != -1) {
+						var arr = s.split('.')
+
+						if(arr[0].length > 8) {
+							$(this).val(v.substring(0, v.length - 1));
+							alert('最多只能输入八位整数');
+						};
+						if(arr[1].length > 4) {
+							$(this).val(n.toFixed(4));
+							alert('最多只能输入四位小数！')
+						};
+					} else if(s.indexOf('.') == -1) {
+
+						if(String($(this).val()).length > 8) {
+
+							$(this).val(v.substring(0, v.length - 1));
+							alert('最多只能输入八位整数');
+							//							return
+						}
+
+					};
+//					if(n != '0' || n != '?' || n != '*') {
+						sum += parseFloat($(this).val());
+						sum.toFixed(4)
+//					}
+
+					document.getElementById("tsqty").value = sum;
+					var ts = String($('#tsqty').val());
+					var nts = Number($('#tsqty').val())
+					if(ts.indexOf('.')!=-1){
+						$('#tsqty').val(nts.toFixed(4))
+					}
+					
+
+				} else if($(this).val() == '0') {
+					$(this).val('');
+					sum = $("#tsqty").val() - $(this).val();
+					alert('输入的数量不能小于0')
 				}
-				document.getElementById("tsqty").value = sum;
 			});
 
+			//盘点数量不能为0
+			if($('#tsqty').val() == '0') {
+				$('#tsqty').val('');
+			} else if($('#tsqty').val() == 'NaN') {
+				$('#tsqty').val('')
+			}
 		})
 	})
 </script>
@@ -264,28 +357,35 @@
 		$('#mstkno').on('input propertychange', function() {
 			var count = $(this).val().length;
 			if(count < 1) {
-				$('#size_div').show();
+				$('#size_div').hide();
 
 				$('#materialcn').val("");
 				$('#scqty').val("");
 
 			}
 		});
+		$('#sampleno').on('input propertychange', function() {
+			var count = $(this).val().length;
+			if(count < 1) {
+				$('#styleno').val("");
+			}
+		});
+
 	})
 </script>
 
-<!--獲取imc0011gkey-->
+<!--獲取imc0021gkey-->
 <script>
-	$('#next').on('tap', function() {
+	$(document).ready(function() {
 		mui.ajax({
 			type: "get",
 			url: server + "/api/Info/gkey",
 			async: false,
 			success: function(data) {
 				localStorage.setItem('imc0011GKEY', data);
-
 			}
 		});
+
 	})
 </script>
 
@@ -301,15 +401,43 @@
 
 			}
 		});
+
+	})
+</script>
+<script>
+	var txts = document.getElementsByTagName("input");
+	$('#BACK').on('tap', function() {
+		//先判断input框是否有值	
+		var mno = $("#mstkno").val();
+		var mcn = $("#materialcn").val();
+		var sty = $("#scqty").val();
+		var oty = $("#tsqty").val();
+
+		if((mno != "") || (mcn != "") || (sty != "") || (oty != "")) {
+			mui.confirm("数据尚未保存或提交,是否确定返回?", "警告", ["是", "否"], function(e) {
+				if(e.index == 0) {
+					plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+					mui.back();
+				} else if(e.index == 1) {
+					return
+				}
+			});
+		} else {
+			plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+			setTimeout(function() {
+				mui.back();
+			}, 500);
+		}
+
 	})
 </script>
 
 <!--点击显示材料名称全部信息-->
 <script>
-	function ShowText(){
-			if($('#materialcn').val()!=''){
-				alert($('#materialcn').val())	
-			}
-			
+	function ShowText() {
+		if($('#materialcn').val() != '') {
+			alert($('#materialcn').val())
+		}
+
 	}
 </script>

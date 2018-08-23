@@ -33,7 +33,7 @@
 				password: myParams.password
 			},
 			success: function(jResponse) {
-//				alert(JSON.stringify(jResponse))
+				alert(JSON.stringify(jResponse))
 				localStorage.setItem('token', 'Bearer ' + jResponse.token)
 				localStorage.setItem('username', jResponse.username)
 				localStorage.setItem('login_gkey', jResponse.login_gkey)
@@ -59,9 +59,14 @@
 							localStorage.setItem('user_info', JSON.stringify(log))
 						}
 					});
-					window.location.href = "main.html"
+					//頁面跳轉
+						mui.openWindow({
+							url: "/src/home/main.html",
+							id: "/src/home/main.html"
+						});
+//					window.location.href = "../../main.html"
 				} else {
-					window.location.href = "login.html"
+					window.location.href = "/src/home/login.html"
 				}
 			},
 			error: function(jError) {

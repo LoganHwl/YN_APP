@@ -1,0 +1,293 @@
+<!DOCTYPE html> 
+<!--登录页面-->
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--引入css样式-->
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<!--引入js文件-->
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.enterfocus.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/global.js"></script>
+		<script src="../../js/jquery-1.8.2.min.js"></script>
+		<!--设置额外需要的css样式-->
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+			.oauth-area {
+				position: absolute;
+				bottom: 20px;
+				left: 0px;
+				text-align: center;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.oauth-area .oauth-btn {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				background-size: 30px 30px;
+				background-position: center center;
+				background-repeat: no-repeat;
+				margin: 0px 20px;
+				/*-webkit-filter: grayscale(100%); */
+				border: solid 1px #ddd;
+				border-radius: 25px;
+			}
+			
+			.oauth-area .oauth-btn:active {
+				border: solid 1px #aaa;
+			}
+			
+			.oauth-area .oauth-btn.disabled {
+				background-color: #ddd;
+			}
+			
+			.font1 {
+				font-size: 22px;
+				background-image: -webkit-linear-gradient(bottom, rgb(201, 115, 255), rgb(20, 11, 255));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+		</style>
+
+	</head>
+<!--body中为页面展示内容-->
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content" id="loginFrm">
+			<div style="text-align: center;padding-top: 58px;">
+				<img class="img-fluid" src="../../img/x200.png" />
+			</div>
+			<div class="h20" style="height:3px"></div>
+
+			<h6 style="text-align: center;font-size:20px ;" class="title font1">扬网盘点出库管理系统V2.0</h6>
+			<div class="h20" style="height:30px"></div>
+
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id="loginUser" autocomplete="on" type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id="loginPswd" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</form>
+			<!--<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						自动登录
+						<div id="autoLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</form>-->
+			<div class="mui-content-padded">
+				<button id="loginBtn" onclick="remPwd()" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+
+				<div class="col-md-12" style="text-align: center;height:0px;margin-top:100px;background-color: #ffc0cb;">
+					<blockquote class="blockquote text-center">
+						<footer class="blockquote-footer" style="text-align: center;margin-bottom: 0px;">(c)2017 Youngnet technology limited corp. all rights reserved.</footer>
+					</blockquote>
+				</div>
+			</div>
+		</div>
+		<div class="mui-content-padded oauth-area">
+
+		</div>
+		</div>
+
+	</body>
+
+</html>
+<!--编写js逻辑脚本-->
+<script>
+	var Id = localStorage.getItem("txtId");
+//判断缓存中是否已存在登录信息
+	if(Id != null) //如果缓存中有数据，则加载出来
+
+	{
+		//将之前的登录缓存信息展示出来
+		document.getElementById("loginUser").value = Id;
+
+		document.getElementById("loginPswd").value = localStorage.getItem("txtPwd");
+
+	};
+
+	//将账号与密码保存到Localstore 
+
+	function remPwd() {
+
+		var id = document.getElementById("loginUser").value;
+
+		var pwd = document.getElementById("loginPswd").value;
+
+		localStorage.setItem("txtId", id);
+
+		localStorage.setItem("txtPwd", pwd);
+
+	}
+</script>
+
+<!--<script>
+	(function($, doc) {
+
+		$.plusReady(function() {
+
+			//检查 "登录状态/锁屏状态" 结束
+			var autoLoginButton = doc.getElementById("autoLogin");
+			var settings = app.getSettings();
+
+			autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active')
+			autoLoginButton.addEventListener('toggle', function(event) {
+				setTimeout(function() {
+					var isActive = event.detail.isActive;
+					settings.autoLogin = isActive;
+					app.setSettings(settings);
+				}, 50);
+			}, false);
+
+		});
+	}(mui, document));
+</script>-->
+
+<script>
+	$(document).ready(function() {
+		$('#loginFrm').show();
+	//点击登录按钮进行跳转
+		$('#loginBtn').click(function() {
+			//获取登陆者账户密码
+			var user = $('#loginUser').val().toString();
+			var pswd = $('#loginPswd').val();
+			//判断登录者账户密码是否输入或是否有误
+			if(user == "" || pswd == "") {
+				alert("请输入账号或密码.");
+				return;
+			}
+
+			var myParams = {
+				account: user,
+				password: pswd
+			}
+
+			doLogin(myParams);
+		})
+		//这里是验证账号或密码是否有误的方法
+		function doLogin(myParams) {
+			if(myParams == null || typeof(myParams) === 'undefined') {
+				window.alert("账号或密码有误！");
+				return;
+			}
+			//		server = $('#server').val();
+			//判断无误后发送请求到后台,载入令牌并保存到本地
+			$.ajax({
+				url: server + '/api/token',
+				type: 'POST',
+				data: {
+					username: myParams.account,
+					password: myParams.password
+				},
+				success: function(jResponse) {
+					localStorage.setItem('token', 'Bearer ' + jResponse.token)
+					localStorage.setItem('username', jResponse.username)
+					localStorage.setItem('login_gkey', jResponse.login_gkey)
+					//全局ajax请求载入令牌
+					if(localStorage.getItem('token') != null) {
+						$.ajaxSetup({
+							headers: {
+								"Authorization": localStorage.getItem('token')
+							}
+						});
+						//这里写登陆成功之后的逻辑
+						//					mui.toast('登陆成功',{ duration:'long', type:'div' }) 
+						//					alert('登陆成功')
+						$.ajax({
+							type: "get",
+							url: server + '/api/Info/userinfo',
+							async: false,
+							data: {
+								login_gkey: localStorage.getItem('login_gkey')
+							},
+							success: function(log) {
+								//本地存储登陆者相关信息,以后会用到
+								//			alert(JSON.stringify(log))
+								localStorage.setItem('user_info', JSON.stringify(log))
+							}
+						});
+						//頁面跳轉至主页面
+						mui.openWindow({
+							url: "/src/home/main.html",
+							id: "/src/home/main.html"
+						});
+						//						window.location.href = "../../main.html"
+					} else {
+						//如果登录失败,继续留在登录页面
+						window.location.href = "/src/home/login.html"
+					}
+				},
+				error: function(jError) {
+					if(jError.status == 401) {
+						alert("账号或密码错误，请重试！")
+					}
+					// Handle your error
+				}
+			});
+		}
+
+	});
+</script>

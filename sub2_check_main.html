@@ -76,7 +76,7 @@
 
 	<body >
 		<header class="mui-bar mui-bar-nav mui-newBar">
-			<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<button id="BACK" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
 				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
 			<!--<button id="#reload" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">刷				新</button>-->
 			<h1 class="mui-title">盘点管理</h1>
@@ -138,7 +138,7 @@
 					gkey: item.ba005gkey
 				},
 				success: function(data) {
-					var html = '<option value="">请选择</option>';
+					var html ;
 					$.each(data, function(i, v) {
 						 html += '<option value="' + v.mr001gkey + '">' + v.whnm + '</option>'
 					});
@@ -163,6 +163,8 @@
 			var chukuDom = document.getElementById("queren");
 		
 			chukuDom.addEventListener("tap", function(g) {
+				
+				
 				 var inputValue = document.getElementById("whnm").value;
 				//本地存mr001gkey
 				localStorage.setItem('MR001gkey',inputValue);
@@ -174,7 +176,18 @@
 					batchno:$("#batchno").val()
 				},
 				success:function(data){
-					if(data=='null' && $('select[name="whnm"]').val() !=''){
+					if( data=='null' && $('select[name="whnm"]').val() !=''){
+						//獲取imc0010gkey
+				mui.ajax({
+					type: "get",
+					url: server+"/api/Info/gkey",
+					async: false,				
+					success: function(data) {
+						localStorage.setItem('PDGKEY', data);
+					
+						}			
+				});
+				
 				//发料出库 ( 实际为新增一笔imc0020)
 				mui.ajax({
 					type: "post",
@@ -230,8 +243,62 @@
 				 }								
 			}
 		})
-	}
-				else if(data!='null' && $('select[name="whnm"]').val() !=''){
+	}else if(data.whnm !=$('select[name="whnm"]').val()){
+		mui.ajax({
+					type: "put",
+				url: server+"/api/Outbound/imc0010",
+				async: false,
+				headers:{
+					'Content-Type':'application/json-patch+json'
+				},				
+				data: {
+					gkey       :localStorage.getItem('PDGKEY'),
+					batchno     :$('#batchno').val(),
+					ba005gkey     :item.ba005gkey,
+					mr001gkey   :inputValue,
+					Clock      :$('#Clock').val,
+					flag      :'0',
+					es101gkey     :item.es101gkey,
+					
+					
+				},
+				success: function(res) {
+							switch(res) {
+						
+						case 'batchno_null':
+						alert('盘点批号不可为空！');
+						return;
+						break;
+						case 'ba005gkey_null':
+						alert('ba005gkey为空！');
+						return;
+						break;
+						case 'es101gkey_null':
+						alert('es101gkey为空！');
+						return;
+						break;
+						case 'mr001gkey_null':
+						alert('mr001gkey为空！');
+						return;
+						break;
+						case 'error':
+						alert('error！');
+						return;
+						break;
+						case 'ok':
+						//頁面跳轉				
+						mui.openWindow({
+							url: "sub2_check_list.html",
+							id: "sub2_check_list.html"
+						});
+						break;
+					default:
+						break;
+				 }	
+				}
+		})
+		
+	}else if(data!='null' && data.whnm ==$('select[name="whnm"]').val()){
 					//頁面跳轉				
 						mui.openWindow({
 							url: "sub2_check_list.html",
@@ -245,16 +312,10 @@
 			})
 		})
 		</script>	
-
-		<script>
-			//獲取imc0010gkey
-				mui.ajax({
-					type: "get",
-					url: server+"/api/Info/gkey",
-					async: false,				
-					success: function(data) {
-						localStorage.setItem('PDGKEY', data);
-					
-						}			
-					})
-		</script>
+<script>
+	$('#BACK').on('tap', function() {
+		
+					plus.webview.getWebviewById('sub2_PANDIAN_unfinish.html').reload();
+					mui.back()
+	})
+</script>

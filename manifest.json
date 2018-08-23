@@ -1,16 +1,16 @@
 {
 	"@platforms": ["android", "iPhone", "iPad"],
-	"id": "H57DA81AA",/*应用的标识，创建应用时自动生成，勿手动修改*/
+	"id": "YN.app.01",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "扬网",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.0",/*应用版本名称*/
+		"name": "2.0.0",/*应用版本名称*/
 		"code": "83"
 	},
 	"description": "扬网软件企业管理类型APP",/*应用描述信息*/
 	"icons": {
 		"72": "icon.png"
 	},
-	"launch_path": "login.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+	"launch_path": "src/home/login.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
 	"developer": {
 		"name": "",/*开发者名称*/
 		"email": "",/*开发者邮箱地址*/
@@ -119,12 +119,12 @@
 				"android": {
 					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
 					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
-					"hdpi": "C:/Users/Administrator/Desktop/01d9355829b955a84a0d304f01c00d.png", /*高分屏启动图片，分辨率：480x762*/
-					"xhdpi": "C:/Users/Administrator/Desktop/01d9355829b955a84a0d304f01c00d.png", /*720P高分屏启动图片，分辨率：720x1242*/
-					"xxhdpi": "C:/Users/Administrator/Desktop/01d9355829b955a84a0d304f01c00d.png"
+					"hdpi": "img/YN-LOGO1.png", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "img/YN-LOGO1.png", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": "img/YN-LOGO1.png"
 				}
 			}
-		},"ads":{"rp":false,"splash":false,"push":false}
+		},"ads":{"rp":false,"splash":false,"push":false},"adid":"124834290306"
 	},
 	"dependencies": {
 		"pages": {
@@ -139,7 +139,9 @@
 				"priority": 0
 			},
 			"sub2.html": {
-				"resources": [],
+				"resources": [
+					"img/出库.ico"
+				],
 				"refer": [
 					"sub2_CHUKU.html",
 					"login.html",
@@ -159,7 +161,8 @@
 				"refer": [
 					"sub2_issue_list01.html",
 					"sub2_CHUKU.html",
-					"sub2_CHUKU_tab.html"
+					"sub2_CHUKU_tab.html",
+					"tab-top-webview-main.html"
 				],
 				"priority": 0
 			},
@@ -168,7 +171,8 @@
 				"refer": [
 					"sub2_issue_main.html",
 					"sub2_issue_list01.html",
-					"sub2_CHUKU_tab.html"
+					"sub2_CHUKU_tab.html",
+					"sub2_CHUKU_detail.html"
 				],
 				"priority": 0
 			},
@@ -189,11 +193,11 @@
 			},
 			"main.html": {
 				"resources": [
-					"sub1.html"
+					"sub1.html",
+					"sub2.html",
+					"sub3.html"
 				],
 				"refer": [
-					"sub3.html",
-					"sub2.html",
 					"login.html"
 				],
 				"priority": 0
@@ -229,19 +233,20 @@
 			},
 			"tab-top-webview-main.html": {
 				"resources": [
-					"sub2_CHUKU.html"
+					"sub2_CHUKU.html",
+					"sub2_CHUKU_2.html"
 				],
 				"refer": [
 					"sub2_issue_list01.html",
-					"sub2_issue_main.html",
-					"sub2_CHUKU_2.html"
+					"sub2_issue_main.html"
 				],
 				"priority": 0
 			},
 			"sub2_CHUKU_2.html": {
 				"resources": [],
 				"refer": [
-					"sub2_issue_list01.html"
+					"sub2_issue_list01.html",
+					"sub2_issue_list02.html"
 				],
 				"priority": 0
 			},
@@ -256,7 +261,10 @@
 			"sub2_issue_list02.html": {
 				"resources": [],
 				"refer": [
-					"QR_Code.html"
+					"QR_Code.html",
+					"QR_Code_CHUKU.html",
+					"QR_Code_CHUKU_2.html",
+					"tab-top-webview-main.html"
 				],
 				"priority": 0
 			},
@@ -269,10 +277,10 @@
 			},
 			"tab-top-webview-main-PD.html": {
 				"resources": [
-					"sub2_PANDIAN_finish.html"
+					"sub2_PANDIAN_finish.html",
+					"sub2_PANDIAN_unfinish.html"
 				],
 				"refer": [
-					"sub2_PANDIAN_unfinish.html",
 					"sub2_check_main.html"
 				],
 				"priority": 0
@@ -287,14 +295,150 @@
 			"sub2_check_main.html": {
 				"resources": [],
 				"refer": [
-					"sub2_check_list.html"
+					"sub2_check_list.html",
+					"sub2_check_list_2.html",
+					"tab-top-webview-main-PD.html"
 				],
 				"priority": 0
 			},
 			"sub2_PANDIAN_unfinish.html": {
 				"resources": [],
 				"refer": [
-					"sub2_check_list.html"
+					"sub2_check_list.html",
+					"sub2_check_list_2.html"
+				],
+				"priority": 0
+			},
+			"sub2_check_list_2.html": {
+				"resources": [],
+				"refer": [
+					"QR_Code.html",
+					"PDQR_Code.html",
+					"PDQR_Code_2.html"
+				],
+				"priority": 0
+			},
+			"sub2_PANDIAN_finish.html": {
+				"resources": [],
+				"refer": [
+					"sub2_PANDIAN_detail.html"
+				],
+				"priority": 0
+			},
+			"src/home/login.html": {
+				"resources": [],
+				"refer": [
+					"src/home/main.html"
+				],
+				"priority": 0
+			},
+			"src/home/main.html": {
+				"resources": [
+					"src/home/sub2.html"
+				],
+				"refer": [
+					"src/home/sub3.html"
+				],
+				"priority": 0
+			},
+			"src/home/sub2.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/tab-top-webview-main-PD.html",
+					"src/CHUKU/tab-top-webview-main.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/tab-top-webview-main-PD.html": {
+				"resources": [
+					"src/PANDIAN/sub2_PANDIAN_unfinish.html"
+				],
+				"refer": [
+					"src/PANDIAN/sub2_PANDIAN_finish.html",
+					"src/PANDIAN/sub2_PANDIAN_list.html",
+					"src/PANDIAN/sub2_PANDIAN_main.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/sub2_PANDIAN_list.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/PDQR_Code.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/sub2_PANDIAN_unfinish.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/sub2_PANDIAN_list_unfinish.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/sub2_PANDIAN_finish.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/sub2_PANDIAN_detail.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/tab-top-webview-main.html": {
+				"resources": [
+					"src/CHUKU/sub2_CHUKU_unfinish.html"
+				],
+				"refer": [
+					"src/CHUKU/sub2_CHUKU_finish.html",
+					"src/CHUKU/sub2_CHUKU_main.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/sub2_CHUKU_unfinish.html": {
+				"resources": [],
+				"refer": [
+					"src/CHUKU/sub2_CHUKU_list_unfinish.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/sub2_CHUKU_finish.html": {
+				"resources": [],
+				"refer": [
+					"src/CHUKU/sub2_CHUKU_detail.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/sub2_CHUKU_main.html": {
+				"resources": [],
+				"refer": [
+					"src/CHUKU/sub2_CHUKU_list.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/sub2_CHUKU_list.html": {
+				"resources": [],
+				"refer": [
+					"src/CHUKU/QR_Code.html",
+					"src/CHUKU/QR_Code2.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/sub2_PANDIAN_list_unfinish.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/PDQR_Code_unfinish.html"
+				],
+				"priority": 0
+			},
+			"src/CHUKU/sub2_CHUKU_list_unfinish.html": {
+				"resources": [],
+				"refer": [
+					"src/CHUKU/QR_Code_unfinish.html",
+					"src/CHUKU/QR_Code_unfinish_2.html"
+				],
+				"priority": 0
+			},
+			"src/PANDIAN/sub2_PANDIAN_main.html": {
+				"resources": [],
+				"refer": [
+					"src/PANDIAN/sub2_PANDIAN_list.html"
 				],
 				"priority": 0
 			}

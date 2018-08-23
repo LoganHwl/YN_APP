@@ -59,11 +59,6 @@
 					
 			scan = null; //扫描对象  
 			mui.plusReady(function() {
-//				$("#mstkno").val('');
-//					$("#materialcn").val('');
-//					$("#scqty").val('');
-//					$("#tsqty").val('');
-//					$("#size").val('');
 				mui.init();
 				startRecognize();
 			});
@@ -94,11 +89,13 @@
 					});
 				} catch(e) {
 					alert("出现错误啦:\n" + e);
+					return
 				}
 			};
 
 			function onerror(e) {
 				alert(e);
+				return 
 			};
 
 			//掃描成功后的回調事件
@@ -141,22 +138,16 @@
 							mr001gkey: mr_gkey
 						},
 						success: function(json) {
-							
 							if(json==null){
 						 	   alert('无此材料，请确认仓库是否正确')
 								//关闭子页面
 								setTimeout(function() {
 									mui.back();
 								}, 0);
-							
+								return ;
 							}else if(json!=null&json.mszsct == '0'){
-								$('#size_div').hide();
 								localStorage.setItem('PDQR_code', JSON.stringify(json));
-//								localStorage.removeItem('SIZE');
-								$("input[name='size']").each(function() {
-										$(this).remove();
-									});
-//								$("input[name='size']").remove();
+
 							var parentWin = plus.webview.getWebviewById('sub2_check_list.html');
 							parentWin.evalJS('shuaxin()');
 							setTimeout(function() {
@@ -164,7 +155,6 @@
 								}, 0);
 						 }else if(json.mszsct == '1'){
 						 	    localStorage.setItem('PDQR_code', JSON.stringify(json));
-//								alert(JSON.stringify(json));
 								mui.ajax(server+'/api/Outbound/vtsk002',{
 									dataType: 'json', //服务器返回json格式数据
 									type: 'get', //HTTP请求类型
@@ -173,12 +163,11 @@
 										gkey: json.gkey 
 									},
 									success: function(data) {
-										$('#size_div').show();
 										localStorage.setItem('SIZE', JSON.stringify(data));
-//										alert(JSON.stringify(data));
 										var parentWin = plus.webview.getWebviewById('sub2_check_list.html');
-										parentWin.evalJS('shuaxin_size()')
 										parentWin.evalJS('shuaxin()');
+										parentWin.evalJS('shuaxin_size()');
+										
 										//关闭子页面
 										setTimeout(function() {
 											mui.back();
@@ -187,6 +176,7 @@
 									},
 									error: function(xhr, type, errorThrown) {
 										alert(errorThrown);
+										return;
 									},
 								})
 							}
@@ -201,9 +191,11 @@
 				plus.gallery.pick(function(path) {
 					plus.barcode.scan(path, onmarked, function(error) {
 						plus.nativeUI.alert("无法识别此图片");
+						return;
 					});
 				}, function(err) {
 					plus.nativeUI.alert("Failed: " + err.message);
+					return;
 				});
 			}
 		</script>

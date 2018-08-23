@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--盘点已完成数据详细页面-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<!--<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />-->
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/sub2_issue_main.css" rel="stylesheet" />
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/global.js"></script>
+		<style>
+			input:-ms-input-placeholder {
+				color: #999;
+				font-size: 14px;
+			}
+			
+			.input_control {
+				width: 300px;
+				margin: 10px auto;
+			}
+			
+			.border {
+				border-bottom: solid 1px #CCDFE8;
+				margin-right: 0px;
+				margin-left: 0px;
+			}
+			
+			.border_2 {
+				height: auto;
+				border-bottom: solid 1px #B3D7FF;
+				margin-right: 20px;
+				margin-left: 10px;
+			}
+			
+			.mui-table h4,
+			.mui-table h5,
+			.mui-table .mui-h5,
+			.mui-table .mui-h6,
+			.mui-table p {
+				margin-top: 0;
+			}
+			
+			.mui-table h4 {
+				line-height: 21px;
+				font-weight: 400;
+				width:98%;
+				height: 80px;
+			}
+			
+			.mui-table .oa-icon {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+			}
+			
+			.mui-table .oa-icon-star-filled {
+				color: #f14e41;
+			}
+			
+			.left {
+				float: left;
+			}
+			
+			.right {
+				margin-left: 120px;
+			}
+			.table1
+        {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
+        }
+        table td, table th
+        {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+            width: 100px;
+            font-size: 15px;
+            font-style: italic;
+            font-weight: 550;
+        }
+        table thead th
+        {
+            background-color: #CCE8EB;
+            width: 100%;
+        }
+        table tr:nth-child(odd)
+        {
+            background: #fff;
+            text-align: center;
+        }
+        table tr:nth-child(even)
+        {
+            background: #F5FAFA;
+            text-align: center;
+        }
+		</style>
+
+	</head>
+
+	<body>
+		<!--页面标题栏-->
+		<header class="mui-bar mui-bar-nav mui-newBar">
+			<!--返回按钮-->
+			<button id="BACK" style="border: none;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
+			<!--<button id="#reload" display="none" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">刷				新</button>-->
+			<h1 class="mui-title">已完成</h1>
+			<!--部分数据内容固定在标题栏-->
+			<div class="mui-content" style="position:fixed;z-index:1;background: #FFF;">
+				<div class="mui-input-row  left" style="background:#EEEEEE;position:fixed;margin-top: 44px;height: 64px;margin-left: -10px;">
+					<label style="margin-left: 2px;height: 0px;width: 45%;margin-top: -9px;">归属:</label>
+					<input class=" mui-input-clear" style="margin-left:4px;width: auto;height: 20px;margin-top: -9px;" type="text" id="cname" disabled="true">
+					<p><label style="margin-top: -30px;margin-left: 2px;height: 0px;width: 45%;">仓库:</label> </p>
+					<input class="mui-input-clear" style="background:transparent;border:0;margin-top: -30px;margin-right:0px;width:auto;height: 20px;" type="text" id="whnm" disabled="true">
+				</div>
+
+				<div class="mui-input-row right" style="background:#EEEEEE;position:fixed;margin-top: 44px;margin-left: 111px;height: 64px;width: 100%;">
+					<label style="margin-left: 12px;margin-top:-9px;width:35%;height: 0px;">盘点批号:</label>
+					<input style="margin-top:-9px;text-align: left;width: 73.5%;" type="text" id="batchno" class="mui-input-clear " disabled="true">
+					<p><label style="margin-top: 16px;text-align: right;width: 24%;">管理员:</label> </p>
+					<input class="mui-input-clear" style="background:transparent;border:0;margin-top: -29px;width: 73.5%;" type="text" id="usercn" disabled="true">
+				</div>
+			</div>
+		</header>
+		<!--接收数据的容器-->
+		<div class="mui-content" id="finished" style="padding-top: 100px;"></div>
+	
+	</body>
+
+</html>
+
+<script>
+	//本地获取imc0010gkey
+	var IMC0010GKEY = localStorage.getItem('PDGKEY');
+	var items;
+	var str = "";
+	var i = 0;
+	var index = 0;
+	var obj = {};
+	var arr = [];
+	//		alert(IMC0020GKEY)
+	//根据imc0010gkey到后台查找相关数据并返回
+	mui.ajax(server + '/api/Outbound/imc0010/detail', {
+		dataType: 'json', //服务器返回json格式数据
+		type: 'get', //HTTP请求类型
+		timeout: 10000, //超时时间设置为10秒；
+		data: {
+			gkey: IMC0010GKEY
+		},
+		success: function(json) {
+//			alert(JSON.stringify(json))
+			var items = json;
+			//遍历数据与标签
+			for(i = 0; i < items.length; i++) {
+				$('#cname').val(items[i].incnm);
+				$('#batchno').val(items[i].batchno);
+				$('#whnm').val(items[i].whnm);
+				$('#usercn').val(items[i].usercn);
+				//盘点是否有尺码，对应不同展示内容
+					if(items[i].mszsct == '0') {
+						str += '<div class="mui-content ">';
+						str += '<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">';
+						str += '<li class="mui-table-view-cell">';
+						str += '<div class="mui-table border">';
+						str += '<h4 class="mui-ellipsis-2" style="word-wrap:break-word">';
+						str += '材料编号：' + items[i].mstkno;
+						str += '</br>';
+						str += '材料名称：' + items[i].materialcn;
+						
+						str += '</br>';
+						str += '</h4>';
+						str += '</div>';
+						str += '总库存数量:' + '&ensp;'+items[i].scqty + '&emsp;&ensp;总盘点数量:' +'&emsp;'+ items[i].tsqty;
+						str += '</br>';
+
+						str += '<div style="text-align:right">'
+						str += '<h5 style="font-size: 18px;">' + items[i].imc0011tsdate + '</h5>';
+						str += '<div>' + '</div>';
+						str += '</div>';
+						str += '</li>';
+						str += '</ul>';
+						str += '</div>';
+					} else if(items[i].mszsct == '1') {
+						str += '<div class="mui-content ">';
+						str += '<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">';
+						str += '<li class="mui-table-view-cell">';
+						str += '<div class="mui-table border">';
+						str += '<h4 class="mui-ellipsis-2" style="word-wrap:break-word">';
+						str += '材料编号：' + items[i].mstkno;
+						str += '</br>';
+						str += '材料名称：' + items[i].materialcn;
+						str += '</h4>';
+						str += '</br>';
+						str += '</div>';
+						str += '总库存数量:' + '&ensp;'+ items[i].scqty + '&emsp;&ensp;总盘点数量:' +'&emsp;'+ items[i].tsqty;
+						str += '</br>';
+
+						str += '</br>';
+						str += '<div>' + '</div>';
+						str += items[i].imc0012info;
+						str += '<div style="text-align:right">'
+						str += '<h5 style="font-size: 18px;">' + items[i].imc0011tsdate + '</h5>';
+
+						str += '</div>';
+						str += '</li>';
+						str += '</ul>';
+						str += '</div>';
+					}
+					
+				
+					$('#finished').html(str);
+				
+				
+				
+
+			}
+		}
+	})
+</script>
+
+<script>
+	//返回按钮逻辑，可自行添加需要的功能
+	$('#BACK').on('tap', function() {
+//					plus.webview.getWebviewById('sub2_CHUKU_2.html').reload();
+						setTimeout(function() {
+				mui.back();
+			}, 0);
+
+	})
+</script>

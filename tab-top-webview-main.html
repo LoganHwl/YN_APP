@@ -16,8 +16,8 @@
 			<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
 				<span class="mui-icon mui-icon-left-nav"></span>返回</button>
 			<h1 class="mui-title">出库汇总</h1>
-			
-			<button id="#faliao" style="top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">发				料</button>
+
+			<button id="#faliao" style="border: none;top: -5px;font-size: 18px;right: 8px;" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-right">发				料</button>
 		</header>
 
 		<div class="mui-content">
@@ -25,11 +25,11 @@
 				<div style="padding: 5px 10px;">
 					<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 						<div class="mui-scroll">
-							<a class="mui-control-item mui-active" href="#item1mobile" data-wid="sub2_CHUKU.html">
-								已完成
-							</a>
-							<a class="mui-control-item" href="#item2mobile" data-wid="sub2_CHUKU_2.html">
+							<a class="mui-control-item mui-active" href="#item1mobile" data-wid="sub2_CHUKU_2.html">
 								未完成
+							</a>
+							<a class="mui-control-item" href="#item2mobile" data-wid="sub2_CHUKU.html">
+								已完成
 							</a>
 						</div>
 					</div>
@@ -41,16 +41,18 @@
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/webviewGroup.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			mui.init();
+			mui.init({
+				swipeBack: true //关闭-右滑关闭功能
+			});
 			mui.plusReady(function() {
 				var group = new webviewGroup("tab-top-webview-main.html", {
 					items: [{
-						id: "sub2_CHUKU.html", //这是子页1的路径
-						url: "sub2_CHUKU.html",
+						id: "sub2_CHUKU_2.html", //这是子页1的路径
+						url: "sub2_CHUKU_2.html",
 						extras: {}
 					}, {
-						id: "sub2_CHUKU_2.html", //这是子页2的路径
-						url: "sub2_CHUKU_2.html",
+						id: "sub2_CHUKU.html", //这是子页2的路径
+						url: "sub2_CHUKU.html",
 						extras: {}
 					}],
 					onChange: function(obj) {
@@ -78,7 +80,8 @@
 				mui.openWindow({
 					url: "sub2_issue_main.html",
 					id: "sub2_issue_main.html"
-				})
+				});
+//				window.close();
 			})
 		</script>
 

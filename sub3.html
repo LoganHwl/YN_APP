@@ -41,12 +41,12 @@
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav white">
-			<h1 class="mui-title">设置</h1>
+		<header class="mui-bar mui-bar-nav white" >
+			<h1 class="mui-title" style="font-size: 18px;text-align: left;margin-left: -20px;">设置</h1>
 		</header>
 		<div class="mui-content">
 			<div class="userInfo" style="margin-top: 5px;">
-				<img src="img/shuijiao.jpg" class="userImage" id="headImage">
+				<img src="img/x200.png" class="userImage" id="headImage">
 				<a class="appName">YN_APP</a>
 			</div>
 			<ul class="mui-table-view" style="margin-top: 25px;">
@@ -73,6 +73,8 @@
 					</a>
 				</li>
 			</ul>
+			
+			 <div id="dropout" onclick="closeApp();">	
 			<ul class="mui-table-view" style="margin-top: 25px;">
 				<li class="mui-table-view-cell">
 					<a style="text-align: center;color: #FF3B30;">
@@ -80,11 +82,12 @@
 					</a>
 				</li>
 			</ul>
+			</div>
 		</div>
 		</style>
 	</body>
 	<script src="js/mui.min.js"></script>
-	<script>
+	<!--<script>
 		var mainImage = document.getElementById('headImage');
 		mui.init({
 			swipeBack:true //启用右滑关闭功能
@@ -263,5 +266,28 @@
 		}
 		
 		
-	</script>
+	</script>-->
 </html>
+  <script type="text/javascript">
+         function closeApp() {
+            plus.nativeUI.actionSheet({
+                cancel: "取消",
+                buttons: [{
+                    title: "注销当前账号"
+                }, {
+                    title: "直接关闭应用"
+                }]
+            }, function(e) {
+                var index = e.index;
+                switch (index) { //case 0: 取消
+                    case 1: //
+                        localStorage.clear();
+                        plus.runtime.restart();
+                        break;
+                    case 2: //
+                        plus.runtime.quit();
+                        break;
+                }
+            });
+        }; 
+    </script>

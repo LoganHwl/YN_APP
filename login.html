@@ -8,8 +8,10 @@
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link href="css/style.css" rel="stylesheet" />
 		<script src="js/mui.min.js"></script>
+		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/app.js"></script>
 		<script src="js/global.js"></script>
-		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-1.8.2.min.js"></script>
 		<style>
 			.area {
 				margin: 20px auto 0px auto;
@@ -87,12 +89,13 @@
 			.oauth-area .oauth-btn.disabled {
 				background-color: #ddd;
 			}
-			.font1{
-            font-size:22px;
-            background-image: -webkit-linear-gradient(bottom, rgb(201, 115, 255), rgb(20, 11, 255));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+			
+			.font1 {
+				font-size: 22px;
+				background-image: -webkit-linear-gradient(bottom, rgb(201, 115, 255), rgb(20, 11, 255));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
 		</style>
 
 	</head>
@@ -103,13 +106,13 @@
 		</header>
 		<div class="mui-content" id="loginFrm">
 			<div style="text-align: center;padding-top: 58px;">
-								<img class="img-fluid" src="img/x200.png" />
-							</div>
-							<div class="h20" style="height:3px"></div>
+				<img class="img-fluid" src="img/x200.png" />
+			</div>
+			<div class="h20" style="height:3px"></div>
 
-							<h6 style="text-align: center;font-size:20px ;" class="title font1" >扬网盘点出库管理系统V2.0</h6>
-							<div class="h20" style="height:30px"></div>
-			
+			<h6 style="text-align: center;font-size:20px ;" class="title font1">扬网盘点出库管理系统V2.0</h6>
+			<div class="h20" style="height:30px"></div>
+
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label>账号</label>
@@ -120,7 +123,7 @@
 					<input id="loginPswd" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 			</form>
-			<form class="mui-input-group">
+			<!--<form class="mui-input-group">
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell">
 						自动登录
@@ -129,101 +132,150 @@
 						</div>
 					</li>
 				</ul>
-			</form>
+			</form>-->
 			<div class="mui-content-padded">
-				<button id="loginBtn" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
-				
+				<button id="loginBtn" onclick="remPwd()" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+
 				<div class="col-md-12" style="text-align: center;height:0px;margin-top:100px;background-color: #ffc0cb;">
-									<blockquote class="blockquote text-center">
-										<footer class="blockquote-footer" style="text-align: center;margin-bottom: 0px;">(c)2017 Youngnet technology limited corp. all rights reserved.</footer>
-									</blockquote>
-								</div>
+					<blockquote class="blockquote text-center">
+						<footer class="blockquote-footer" style="text-align: center;margin-bottom: 0px;">(c)2017 Youngnet technology limited corp. all rights reserved.</footer>
+					</blockquote>
 				</div>
 			</div>
-			<div class="mui-content-padded oauth-area">
-
-			</div>
 		</div>
-	
+		<div class="mui-content-padded oauth-area">
+
+		</div>
+		</div>
+
 	</body>
 
 </html>
 <script>
-	$(document).ready(function() {
-	$('#loginFrm').show();
+	var Id = localStorage.getItem("txtId");
 
-	$('#loginBtn').click(function() {
-		var user = $('#loginUser').val().toString();
-		var pswd = $('#loginPswd').val();
+	if(Id != null) //如果缓存中有数据，则加载出来
 
-		if(user == "" || pswd == "") {
-			alert("请输入账号或密码.");
-			return;
-		}
+	{
 
-		var myParams = {
-			account: user,
-			password: pswd
-		}
+		document.getElementById("loginUser").value = Id;
 
-		doLogin(myParams);
-	})
+		document.getElementById("loginPswd").value = localStorage.getItem("txtPwd"); 
 
-	function doLogin(myParams) {
-		if(myParams == null || typeof(myParams) === 'undefined') {
-			window.alert("账号或密码有误！");
-			return;
-		}
-//		server = $('#server').val();
+	};
 
-		$.ajax({
-			url:  server + '/api/token',
-			type: 'POST',
-			data: {
-				username: myParams.account,
-				password: myParams.password
-			},
-			success: function(jResponse) {
-//				alert(JSON.stringify(jResponse))
-				localStorage.setItem('token', 'Bearer ' + jResponse.token)
-				localStorage.setItem('username', jResponse.username)
-				localStorage.setItem('login_gkey', jResponse.login_gkey)
-				//全局ajax请求载入令牌
-				if(localStorage.getItem('token') != null) {
-					$.ajaxSetup({
-						headers: {
-							"Authorization": localStorage.getItem('token')
-						}
-					});
-					//这里写登陆成功之后的逻辑
-//					mui.toast('登陆成功',{ duration:'long', type:'div' }) 
-//					alert('登陆成功')
-					$.ajax({
-						type: "get",
-						url: server+'/api/Info/userinfo',
-						async: false,
-						data: {
-							login_gkey: localStorage.getItem('login_gkey')
-						},
-						success: function(log) {
-							//			alert(JSON.stringify(log))
-							localStorage.setItem('user_info', JSON.stringify(log))
-						}
-					});
-					window.location.href = "main.html"
-				} else {
-					window.location.href = "login.html"
-				}
-			},
-			error: function(jError) {
-				if(jError.status == 401) {
-					alert("账号或密码错误，请重试！")
-				}
-				// Handle your error
-			}
-		});
+	//将账号与密码保存到Localstore 
+
+	function remPwd() {
+
+		var id = document.getElementById("loginUser").value;
+
+		var pwd = document.getElementById("loginPswd").value;
+
+		localStorage.setItem("txtId", id);
+
+		localStorage.setItem("txtPwd", pwd);
+
 	}
-
-});
 </script>
 
+<!--<script>
+	(function($, doc) {
+
+		$.plusReady(function() {
+
+			//检查 "登录状态/锁屏状态" 结束
+			var autoLoginButton = doc.getElementById("autoLogin");
+			var settings = app.getSettings();
+
+			autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active')
+			autoLoginButton.addEventListener('toggle', function(event) {
+				setTimeout(function() {
+					var isActive = event.detail.isActive;
+					settings.autoLogin = isActive;
+					app.setSettings(settings);
+				}, 50);
+			}, false);
+
+		});
+	}(mui, document));
+</script>-->
+
+<script>
+	$(document).ready(function() {
+		$('#loginFrm').show();
+
+		$('#loginBtn').click(function() {
+			var user = $('#loginUser').val().toString();
+			var pswd = $('#loginPswd').val();
+
+			if(user == "" || pswd == "") {
+				alert("请输入账号或密码.");
+				return;
+			}
+
+			var myParams = {
+				account: user,
+				password: pswd
+			}
+
+			doLogin(myParams);
+		})
+
+		function doLogin(myParams) {
+			if(myParams == null || typeof(myParams) === 'undefined') {
+				window.alert("账号或密码有误！");
+				return;
+			}
+			//		server = $('#server').val();
+
+			$.ajax({
+				url: server + '/api/token',
+				type: 'POST',
+				data: {
+					username: myParams.account,
+					password: myParams.password
+				},
+				success: function(jResponse) {
+					//				alert(JSON.stringify(jResponse))
+					localStorage.setItem('token', 'Bearer ' + jResponse.token)
+					localStorage.setItem('username', jResponse.username)
+					localStorage.setItem('login_gkey', jResponse.login_gkey)
+					//全局ajax请求载入令牌
+					if(localStorage.getItem('token') != null) {
+						$.ajaxSetup({
+							headers: {
+								"Authorization": localStorage.getItem('token')
+							}
+						});
+						//这里写登陆成功之后的逻辑
+						//					mui.toast('登陆成功',{ duration:'long', type:'div' }) 
+						//					alert('登陆成功')
+						$.ajax({
+							type: "get",
+							url: server + '/api/Info/userinfo',
+							async: false,
+							data: {
+								login_gkey: localStorage.getItem('login_gkey')
+							},
+							success: function(log) {
+								//			alert(JSON.stringify(log))
+								localStorage.setItem('user_info', JSON.stringify(log))
+							}
+						});
+						window.location.href = "main.html"
+					} else {
+						window.location.href = "login.html"
+					}
+				},
+				error: function(jError) {
+					if(jError.status == 401) {
+						alert("账号或密码错误，请重试！")
+					}
+					// Handle your error
+				}
+			});
+		}
+
+	});
+</script>

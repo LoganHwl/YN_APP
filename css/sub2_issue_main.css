@@ -14,9 +14,9 @@
    .mui-input-group:before{background: none;}
    .mui-input-group:after{background: none;} 
    .mui-input-group .mui-input-row{height: 55px;}
-   .mui-input-row label{line-height: 55px;padding: 0;text-align: left;width: 30%;padding-left: 10px;color:#1E1E1E;font-size: 18px !important;} .mui-input-group .mui-input-row:after{background-color: #eee;}
+   .mui-input-row label{line-height: 55px;padding: 0;text-align: left;width: 30%;padding-left: 0px;color:#1E1E1E;font-size: 18px !important;} .mui-input-group .mui-input-row:after{background-color: #eee;}
    .mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea{width: 70%;min-height: 54px;text-align: left; font-size: 18px;border-radius: 0;}
-   .mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{left:45%;top: 40%;width: 200px;height: 45px;} 
+   .mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{left:67%;top: 45%;width: 200px;height: 45px;} 
    .mui-input-row select{font-size: 18px;width: auto !important;padding-right: 100px;} 
    .mui-input-row select option{text-align: left;} 
    .mui-input-row textarea{padding: 10px;height: 50px;}

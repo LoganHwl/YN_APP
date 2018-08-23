@@ -32,6 +32,9 @@
             var limit = 10;  
     		var enablePullUp = true;  
     $(document).ready(function(){  
+    	
+				swipeBack: true //关闭-右滑关闭功能
+			
   
         //上拉加载下拉刷新初始化  
         mui.init({  
@@ -97,7 +100,7 @@
 					page:page,
 					limit:limit,
 					es101gkey: item.es101gkey,
-					mr001gkey: items_2,
+//					mr001gkey: items_2,
 					flag: '1'
 				},
 				success: function(json) {
@@ -113,11 +116,11 @@
 					str += '<ul class="mui-table-view">';
 					for(i = 0; i < items.length; i++) {
 						str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
-						str += '<div id="mtb" ' + ' class="mui-slider-left">';
-						str += '<a class="mui-btn mui-btn-red" onclick="DeleteOne(this,\'' + items[i].gkey + '\')">' + '删除' + '</a> ';
+						str += '<div id="mtb" ' + ' class="mui-slider-right">';
+//						str += '<a class="mui-btn mui-btn-red" onclick="DeleteOne(this,\'' + items[i].gkey + '\')">' + '删除' + '</a> ';
 						str += '</div>';
 						str += '<div class="mui-slider-handle">';
-						str += '<div class="mui-media-body "  >';
+						str += '<div class="mui-media-body " ' + ' onclick="newDoc(this,\''+items[i].gkey+'\')" ' + ' >';
 						str += '归属:' + items[i].incnm + '  出库批号:' + items[i].batchno;
 						str += '<p class="mui-h4 mui-ellipsis">'
 						str += '  仓库:' + items[i].whnm + '  仓管员:' + items[i].usercn;
@@ -125,7 +128,7 @@
 						str += '  出库日期:  ' + items[i].issuedate;
 						str += '</div>';
 						str += '</div>';
-						str += '</li>';					
+						str += '</li>';
 					}
 					str += '</ul>';
 					str += '</div>';
@@ -144,42 +147,35 @@
     }  
 		</script>
 		
+		<!--会话存储-->
+		<script>
+			function newDoc(e,id) {
+				localStorage.setItem('GKEY',id);
+//				alert(id);
+				mui.openWindow({
+					url: 'sub2_CHUKU_detail.html',
+					id: 'sub2_CHUKU_detail.html',
+					styles: {
+						top: 0,
+						bottom: 0
+					},
+					show: {
+						autoShow: true,
+						aniShow: 'slide-in-right',
+					},
+					waiting: {
+						autoShow: false, //自动显示等待框
+						title: '正在加载...', //等待对话框上显示的提示内容
+					}
+				});
+
+			}
+		</script>
 	</body>
 
 </html>
- 	<script>	
-	function DeleteOne(obj,id) {
-//		alert(1)
-		var btnArray = ['确认', '取消'];
-		var li = obj.parentNode.parentNode;
+ 
 
-		mui.confirm('确认删除？', '提示', btnArray, function(d) {
-			if(d.index == 0) {
-				//确认：获取li节点的父节点，即<ul>，并调用removeChild()方法删除当前选中的子节点<li>  
-				li.parentNode.removeChild(li);
-				alert(id);
-		mui.ajax(server + '/api/Outbound/imc0020', {
-			
-			dataType: 'json', //服务器返回json格式数据
-			type: 'delete', //HTTP请求类型
-			timeout: 10000, //超时时间设置为10秒；
-			data: {
-				gkey: id
-			},
-			success: function() {
-				
-				alert('删除成功！');
-				//界面删除
-			}
-		})
 
-			} else {
-				//取消：关闭滑动列表  
-				$.swipeoutClose(li);
-			}
-		});
-		
-	}
-</script>
 
 			

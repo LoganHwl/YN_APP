@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--出库未完成页面-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>扬网软件</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-1.8.2.min.js"></script>
+		<script src="../../js/global.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+
+		<script type="text/javascript" charset="utf-8">
+		//声明相关变量
+			var items;
+			var page = 0;
+			var limit = 10;
+			var enablePullUp = true;
+			$(document).ready(function() {
+
+				//上拉加载下拉刷新初始化  
+				mui.init({
+					pullRefresh: {
+						container: '#pullrefresh',
+						down: {
+							height: 100,
+							style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式  
+							color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色  
+							callback: billRefresh
+						},
+						up: {
+							height: 100,
+							auto: true,
+							contentrefresh: '正在加载...',
+							contentnomore: '',
+							callback: billLoad
+						}
+					},
+					swipeBack: true, //启用右滑关闭功能  
+					beforeback: function() {
+						//返回true，继续页面关闭逻辑  
+						return true;
+					}
+				});
+			});
+
+			/** 
+			 * 上拉加载具体业务实现 
+			 */
+			function billLoad() {
+				if(!enablePullUp) {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(false);
+					mui.toast("没有更多数据了");
+					return;
+				}
+				page++;
+				getBill();
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+			}
+
+			/** 
+			 * 下拉刷新具体业务实现 
+			 */
+			function billRefresh() {
+				page = 1;
+				getBill();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}
+			//上拉加载/下拉刷新的实现方法
+			function getBill() {
+
+				var item = JSON.parse(localStorage.getItem('user_info'));
+				var items_2 = localStorage.getItem('MR001gkey');
+				//上拉后进行ajax请求并接收返回的数据
+				mui.ajax(server + '/api/Outbound/imc0020list', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					data: {
+						page: page,
+						limit: limit,   //每页展示的数据长度限制
+						es101gkey: item.es101gkey,
+//						mr001gkey: items_2,
+						flag: '0'
+					},
+					success: function(json) {
+						//如果成功返回数据，则通过拼接字符串的方式将数据展示到页面
+						var count = json.rows;
+						//本地存储imc0020的相关数据
+						localStorage.setItem('imc0020_info', JSON.stringify(json.data));
+
+						items = json.data;
+
+						var str = "";
+
+						str += '<div class="mui-content">';
+						str += '<ul class="mui-table-view">';
+						//遍历数据
+						for(i = 0; i < items.length; i++) {
+							str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
+							str += '<div id="mtb" ' + ' class="mui-slider-left">';
+							str += '<a class="mui-btn mui-btn-red" onclick="DeleteOne(this,\'' + items[i].gkey + '\')">' + '删除' + '</a> ';
+							str += '</div>';
+							str += '<div class="mui-slider-handle">';
+							str += '<div class="mui-media-body " ' + ' onclick="newDoc(this,\'' + items[i].gkey + '\')" ' + ' >';
+							str += '归属:' + items[i].incnm + '  出库批号:' + items[i].batchno;
+							str += '<p class="mui-h4 mui-ellipsis">'
+							str += '  仓库:' + items[i].whnm + '  仓管员:' + items[i].usercn;
+							str += '<p class="mui-h5 mui-ellipsis">'
+							str += '  出库日期:  ' + items[i].issuedate;
+
+							str += '</div>';
+							str += '</div>';
+							str += '</li>';
+						}
+						str += '</ul>';
+						str += '</div>';
+//						将数据展示到页面
+						$("#tb").html(str);
+						//					alert(page);
+
+						enablePullUp = items.length >= limit;
+					},
+					error: function(json) {
+						//如果没有数据，则提示
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。  
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed  
+						enablePullUp = false;
+					}
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<!--这里给下拉加载和数据展示等逻辑添加容器，即实现功能的地方-->
+		<div class="mui-content" id="pullrefresh">
+			<div class="mui-scroll">
+
+				<table class="table browser-table " id="tb" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100%;">
+
+					<tbody id="tb">
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!--会话存储-->
+		<script>
+			function newDoc(e, id) {
+				//获取imc0020gkey，并跳转到‘发料出库’页面
+				localStorage.setItem('GKEY', id);
+				mui.openWindow({
+					url: '/src/CHUKU/sub2_CHUKU_list_unfinish.html',
+					id: 'sub2_issue_list02.html',
+					styles: {
+						top: 0,
+						bottom: 0
+					},
+					show: {
+						autoShow: true,
+						aniShow: 'slide-in-right',
+					},
+					waiting: {
+						autoShow: false, //自动显示等待框
+						title: '正在加载...', //等待对话框上显示的提示内容
+					}
+				});
+				
+
+			}
+		</script>
+
+	</body>
+
+</html>
+
+<script>
+	//删除imc0020的未完成数据
+	function DeleteOne(obj, id) {
+		//		alert(1)
+		var btnArray = ['确认', '取消'];
+		var li = obj.parentNode.parentNode;
+
+		mui.confirm('确认删除？', '提示', btnArray, function(d) {
+			if(d.index == 0) {
+				//确认：获取li节点的父节点，即<ul>，并调用removeChild()方法删除当前选中的子节点<li>  
+				li.parentNode.removeChild(li);
+				//根据gkey到后台查找对应的数据并删除
+		mui.ajax(server + '/api/Outbound/imc0020', {
+
+			dataType: 'json', //服务器返回json格式数据
+			type: 'delete', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			data: {
+				gkey: id
+			},
+			success: function() {
+
+				//				alert('删除成功！');
+				//界面删除
+			}
+		})
+				
+
+			} else {
+				//取消：关闭滑动列表  
+				$.swipeoutClose(li);
+				return
+			}
+		});
+		//		alert(id);
+		
+	}
+</script>

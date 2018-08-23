@@ -96,11 +96,13 @@
 					});
 				} catch(e) {
 					alert("出现错误啦:\n" + e);
+					return;
 				}
 			};
 
 			function onerror(e) {
 				alert(e);
+				return;
 			};
 
 			//掃描成功后的回調事件
@@ -150,7 +152,7 @@
 								setTimeout(function() {
 									mui.back();
 								}, 0);
-							
+							return;
 							}else if(json!=null&json.mszsct == '0'){
 								localStorage.setItem('QR_code', JSON.stringify(json));
 //								localStorage.removeItem('SIZE');
@@ -188,6 +190,7 @@
 									},
 									error: function(xhr, type, errorThrown) {
 										alert(errorThrown);
+										return;
 									},
 								})
 							}
@@ -202,10 +205,12 @@
 				plus.gallery.pick(function(path) {
 					plus.barcode.scan(path, onmarked, function(error) {
 						plus.nativeUI.alert("无法识别此图片");
+						return
 					});
 				}, function(err) {
 					plus.nativeUI.alert("Failed: " + err.message);
-				});
+					return;
+				})
 			}
 		</script>
 	</body>

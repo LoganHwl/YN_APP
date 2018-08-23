@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--盘点已完成数据展示页面-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>扬网软件</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		
+		
+		<style></style>
+	</head>
+
+	<body>
+		<!--接收容器，具体说明与unfinish页面类似-->
+		<div class="mui-content" id="pullrefresh">           
+        <div class="mui-scroll">
+		
+			<table class="table browser-table " id="tb" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100%;">
+
+				<tbody id="tb">
+				</tbody>
+			</table>
+		</div>
+		</div>
+        <script src="../../js/mui.js"></script>
+		<script src="../../js/jquery-1.8.2.min.js"></script>
+		<script src="../../js/global.js"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+		
+		    var page = 0;  
+            var limit = 10;  
+    		var enablePullUp = true;  
+    $(document).ready(function(){  
+  		swipeBack: true //关闭-右滑关闭功能
+        //上拉加载下拉刷新初始化  
+        mui.init({  
+            pullRefresh: {  
+                container: '#pullrefresh',  
+                down: { 
+                	height:100,
+                    style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式  
+                    color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色  
+                    callback: billRefresh  
+                },  
+                up: {
+                	height:100,
+                    auto:true,  
+                    contentrefresh: '正在加载...',  
+                    contentnomore:'',  
+                    callback: billLoad  
+                }  
+            },  
+            swipeBack:true, //启用右滑关闭功能  
+            beforeback: function(){  
+                //返回true，继续页面关闭逻辑  
+                return true;  
+            }  
+        });  
+    });  
+      
+    /** 
+     * 上拉加载具体业务实现 
+     */  
+    function billLoad() {  
+        if (!enablePullUp) {  
+            mui('#pullrefresh').pullRefresh().endPullupToRefresh(false);  
+            mui.toast("没有更多数据了");  
+            return;
+            
+        }  
+        page++;  
+        getBill();
+       
+        mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+        
+    }  
+      
+    /** 
+     * 下拉刷新具体业务实现 
+     */  
+    function billRefresh() {  
+        page = 1;  
+        getBill();  
+        mui('#pullrefresh').pullRefresh().endPulldownToRefresh();  
+    }  
+    
+    function getBill() {  
+            var items;
+			var item = JSON.parse(localStorage.getItem('user_info'));
+			var items_2 = localStorage.getItem('MR001gkey')
+			mui.ajax(server + '/api/Outbound/imc0010list', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				data: {
+					page:page,
+					limit:limit,
+					es101gkey: item.es101gkey,
+//					mr001gkey: items_2,
+					flag: '1'
+				},
+				success: function(json) {
+					var count = json.rows;
+					
+					sessionStorage.setItem('imc0010_info', JSON.stringify(json.data));
+					items = json.data;
+					
+					
+					var str = "";
+	
+					str += '<div class="mui-content">';					
+					str += '<ul class="mui-table-view">';
+					for(i = 0; i < items.length; i++) {
+						str += '<li id="' + i + '" ' + ' class="mui-table-view-cell mui-media ">';
+						str += '<div id="mtb" ' + ' class="mui-slider-right">';
+//						str += '<a class="mui-btn mui-btn-red" onclick="DeleteOne(this,\'' + items[i].gkey + '\')">' + '删除' + '</a> ';
+						str += '</div>';
+						str += '<div class="mui-slider-handle">';
+						str += '<div class="mui-media-body " ' + ' onclick="newDoc(this,\''+items[i].gkey+'\')" ' + ' >';
+						str += '归属:' + items[i].incnm + '  盘点批号:' + items[i].batchno;
+						str += '<p class="mui-h4 mui-ellipsis">'
+						str += '  仓库:' + items[i].whnm + '  管理员:' + items[i].usercn;
+						str += '<p class="mui-h5 mui-ellipsis">'
+						str += '  盘点日期:  ' + items[i].issuedate;
+						str += '</div>';
+						str += '</div>';
+						str += '</li>';					
+					}
+					str += '</ul>';
+					str += '</div>';
+				
+					$("#tb").html(str);
+//					alert(page);
+		  
+                enablePullUp = items.length >= limit;  
+            },  
+            error: function (json) {  
+                mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。  
+                mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed  
+                enablePullUp = false;  
+            }  
+        });  
+    }  
+		</script>
+		
+	</body>
+
+</html>
+
+		<!--会话存储-->
+		<script>
+			function newDoc(e,id) {
+				localStorage.setItem('PDGKEY',id);
+//				alert(id);
+				mui.openWindow({
+					url: '/src/PANDIAN/sub2_PANDIAN_detail.html',
+					id: 'sub2_PANDIAN_detail.html',
+					styles: {
+						top: 0,
+						bottom: 0
+					},
+					show: {
+						autoShow: true,
+						aniShow: 'slide-in-right',
+					},
+					waiting: {
+						autoShow: false, //自动显示等待框
+						title: '正在加载...', //等待对话框上显示的提示内容
+					}
+				});
+
+			}
+		</script>
+			

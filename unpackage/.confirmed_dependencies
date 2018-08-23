@@ -1,158 +1,278 @@
 {
-  "index.html": {
-    "resources": [
-      "sub1.html"
-    ],
-    "refer": [
-      "sub3.html",
-      "sub2.html",
-      "sub1.html"
-    ]
-  },
-  "sub2.html": {
-    "refer": [
-      "sub2_CHUKU.html",
-      "login.html",
-      "sub2_CHUKU_tab.html",
-      "tab-top-webview-main.html",
-      "sub2_issue_list01.html",
-      "C.html",
-      "B.html",
-      "test.html",
-      "index.html",
-      "tab-top-webview-main-PD.html"
-    ],
-    "resources": []
-  },
-  "sub2_issue_main.html": {
-    "refer": [
-      "sub2_issue_list01.html",
-      "sub2_CHUKU.html",
-      "sub2_CHUKU_tab.html"
-    ],
-    "resources": []
-  },
-  "sub2_CHUKU.html": {
-    "refer": [
-      "sub2_issue_main.html",
-      "sub2_issue_list01.html",
-      "sub2_CHUKU_tab.html"
-    ],
-    "resources": []
-  },
-  "sub2_issue_list01.html": {
-    "refer": [
-      "QR_Code.html",
-      "sub2_CHUKU.html",
-      "sub2_CHUKU_tab.html",
-      "sub2_issue_list01.html",
-      "barcode_scan.html",
-      "sub2.html",
-      "QR_Code2.html",
-      "sub2_issue_main.html"
-    ],
-    "resources": [
-      "sub2_issue_list01.html"
-    ]
-  },
-  "main.html": {
-    "resources": [
-      "sub1.html"
-    ],
-    "refer": [
-      "sub3.html",
-      "sub2.html",
-      "sub1.html",
-      "login.html"
-    ]
-  },
-  "login.html": {
-    "refer": [
-      "main.html",
-      "sub2.html"
-    ],
-    "resources": [
-      "js/tether.js",
-      "js/jquery.min.js",
-      "js/popper.min.js",
-      "css/fontawesome.min.css",
-      "js/login.js",
-      "js/bootstrap.min.js",
-      "js/global.js",
-      "img/x200.png",
-      "css/bootstrap.min.css"
-    ]
-  },
-  "sub2_CHUKU_tab.html": {
-    "refer": [
-      "sub2_CHUKU.html",
-      "sub2_issue_list01.html",
-      "sub2_issue_main.html",
-      "tab-top-webview-main.html"
-    ],
-    "resources": [
-      "tab-top-webview-main.html"
-    ]
-  },
-  "tab-top-webview-main.html": {
-    "refer": [
-      "sub2_issue_list01.html",
-      "sub2_CHUKU.html",
-      "sub2_issue_main.html",
-      "sub2_CHUKU_2.html"
-    ],
-    "resources": [
-      "sub2_CHUKU.html"
-    ]
-  },
-  "sub2_CHUKU_2.html": {
-    "refer": [
-      "sub2_issue_list01.html"
-    ],
-    "resources": []
-  },
-  "QR_Code.html": {
-    "refer": [
-      "sub2_issue_list01.html",
-      "sub2_issue_list02.html"
-    ],
-    "resources": []
-  },
-  "sub2_issue_list02.html": {
-    "refer": [
-      "QR_Code.html"
-    ],
-    "resources": []
-  },
-  "C.html": {
-    "refer": [
-      "B.html"
-    ],
-    "resources": []
-  },
-  "tab-top-webview-main-PD.html": {
-    "resources": [
-      "sub2_PANDIAN_finish.html"
-    ],
-    "refer": [
-      "sub2_PANDIAN_unfinish.html",
-      "sub2_PANDIAN_finish.html",
-      "sub2_check_main.html"
-    ]
-  },
-  "sub2_check_list.html": {
-    "refer": [
-      "PDQR_Code.html"
-    ]
-  },
-  "sub2_check_main.html": {
-    "refer": [
-      "sub2_check_list.html"
-    ]
-  },
-  "sub2_PANDIAN_unfinish.html": {
-    "refer": [
-      "sub2_check_list.html"
-    ]
-  }
+	"index.html": {
+		"resources": [
+			"sub1.html"
+		],
+		"refer": [
+			"sub3.html",
+			"sub2.html",
+			"sub1.html"
+		]
+	},
+	"sub2.html": {
+		"refer": [
+			"sub2_CHUKU.html",
+			"login.html",
+			"sub2_CHUKU_tab.html",
+			"tab-top-webview-main.html",
+			"sub2_issue_list01.html",
+			"C.html",
+			"B.html",
+			"test.html",
+			"index.html",
+			"tab-top-webview-main-PD.html"
+		],
+		"resources": [
+			"img/�.ico"
+		]
+	},
+	"sub2_issue_main.html": {
+		"refer": [
+			"sub2_issue_list01.html",
+			"sub2_CHUKU.html",
+			"sub2_CHUKU_tab.html",
+			"tab-top-webview-main.html"
+		],
+		"resources": []
+	},
+	"sub2_CHUKU.html": {
+		"refer": [
+			"sub2_issue_main.html",
+			"sub2_issue_list01.html",
+			"sub2_CHUKU_tab.html",
+			"sub2_CHUKU_detail.html"
+		],
+		"resources": []
+	},
+	"sub2_issue_list01.html": {
+		"refer": [
+			"QR_Code.html",
+			"sub2_CHUKU.html",
+			"sub2_CHUKU_tab.html",
+			"sub2_issue_list01.html",
+			"barcode_scan.html",
+			"sub2.html",
+			"QR_Code2.html",
+			"sub2_issue_main.html"
+		],
+		"resources": [
+			"sub2_issue_list01.html"
+		]
+	},
+	"main.html": {
+		"resources": [
+			"sub1.html",
+			"sub2.html",
+			"sub3.html"
+		],
+		"refer": [
+			"sub3.html",
+			"sub2.html",
+			"sub1.html",
+			"login.html"
+		]
+	},
+	"login.html": {
+		"refer": [
+			"main.html",
+			"sub2.html"
+		],
+		"resources": [
+			"js/tether.js",
+			"js/jquery.min.js",
+			"js/popper.min.js",
+			"css/fontawesome.min.css",
+			"js/login.js",
+			"js/bootstrap.min.js",
+			"js/global.js",
+			"img/x200.png",
+			"css/bootstrap.min.css"
+		]
+	},
+	"sub2_CHUKU_tab.html": {
+		"refer": [
+			"sub2_CHUKU.html",
+			"sub2_issue_list01.html",
+			"sub2_issue_main.html",
+			"tab-top-webview-main.html"
+		],
+		"resources": [
+			"tab-top-webview-main.html"
+		]
+	},
+	"tab-top-webview-main.html": {
+		"refer": [
+			"sub2_issue_list01.html",
+			"sub2_CHUKU.html",
+			"sub2_issue_main.html",
+			"sub2_CHUKU_2.html"
+		],
+		"resources": [
+			"sub2_CHUKU.html",
+			"sub2_CHUKU_2.html"
+		]
+	},
+	"sub2_CHUKU_2.html": {
+		"refer": [
+			"sub2_issue_list01.html",
+			"sub2_issue_list02.html"
+		],
+		"resources": []
+	},
+	"QR_Code.html": {
+		"refer": [
+			"sub2_issue_list01.html",
+			"sub2_issue_list02.html"
+		],
+		"resources": []
+	},
+	"sub2_issue_list02.html": {
+		"refer": [
+			"QR_Code.html",
+			"QR_Code_CHUKU.html",
+			"QR_Code_CHUKU_2.html",
+			"tab-top-webview-main.html"
+		],
+		"resources": []
+	},
+	"C.html": {
+		"refer": [
+			"B.html"
+		],
+		"resources": []
+	},
+	"tab-top-webview-main-PD.html": {
+		"resources": [
+			"sub2_PANDIAN_finish.html",
+			"sub2_PANDIAN_unfinish.html"
+		],
+		"refer": [
+			"sub2_PANDIAN_unfinish.html",
+			"sub2_PANDIAN_finish.html",
+			"sub2_check_main.html"
+		]
+	},
+	"sub2_check_list.html": {
+		"refer": [
+			"PDQR_Code.html"
+		]
+	},
+	"sub2_check_main.html": {
+		"refer": [
+			"sub2_check_list.html",
+			"sub2_check_list_2.html",
+			"tab-top-webview-main-PD.html"
+		]
+	},
+	"sub2_PANDIAN_unfinish.html": {
+		"refer": [
+			"sub2_check_list.html",
+			"sub2_check_list_2.html"
+		]
+	},
+	"sub2_check_list_2.html": {
+		"refer": [
+			"QR_Code.html",
+			"PDQR_Code.html",
+			"PDQR_Code_2.html"
+		]
+	},
+	"sub2_PANDIAN_finish.html": {
+		"refer": [
+			"sub2_PANDIAN_detail.html"
+		]
+	},
+	"src/home/login.html": {
+		"refer": [
+			"src/home/main.html"
+		]
+	},
+	"src/home/main.html": {
+		"resources": [
+			"src/home/sub2.html"
+		],
+		"refer": [
+			"src/home/sub2.html",
+			"src/home/sub3.html"
+		]
+	},
+	"src/home/sub2.html": {
+		"refer": [
+			"src/PANDIAN/tab-top-webview-main-PD.html",
+			"src/CHUKU/tab-top-webview-main.html"
+		]
+	},
+	"src/PANDIAN/tab-top-webview-main-PD.html": {
+		"resources": [
+			"src/PANDIAN/sub2_PANDIAN_unfinish.html"
+		],
+		"refer": [
+			"src/PANDIAN/sub2_PANDIAN_finish.html",
+			"src/PANDIAN/sub2_PANDIAN_unfinish.html",
+			"src/PANDIAN/sub2_PANDIAN_list.html",
+			"src/PANDIAN/sub2_PANDIAN_main.html"
+		]
+	},
+	"src/PANDIAN/sub2_PANDIAN_list.html": {
+		"refer": [
+			"src/PANDIAN/PDQR_Code.html"
+		]
+	},
+	"src/PANDIAN/sub2_PANDIAN_unfinish.html": {
+		"refer": [
+			"src/PANDIAN/sub2_PANDIAN_list_unfinish.html"
+		]
+	},
+	"src/PANDIAN/sub2_PANDIAN_finish.html": {
+		"refer": [
+			"src/PANDIAN/sub2_PANDIAN_detail.html"
+		]
+	},
+	"src/CHUKU/tab-top-webview-main.html": {
+		"resources": [
+			"src/CHUKU/sub2_CHUKU_unfinish.html"
+		],
+		"refer": [
+			"src/CHUKU/sub2_CHUKU_unfinish.html",
+			"src/CHUKU/sub2_CHUKU_finish.html",
+			"src/CHUKU/sub2_CHUKU_main.html"
+		]
+	},
+	"src/CHUKU/sub2_CHUKU_unfinish.html": {
+		"refer": [
+			"src/CHUKU/sub2_CHUKU_list_unfinish.html"
+		]
+	},
+	"src/CHUKU/sub2_CHUKU_finish.html": {
+		"refer": [
+			"src/CHUKU/sub2_CHUKU_detail.html"
+		]
+	},
+	"src/CHUKU/sub2_CHUKU_main.html": {
+		"refer": [
+			"src/CHUKU/sub2_CHUKU_list.html"
+		]
+	},
+	"src/CHUKU/sub2_CHUKU_list.html": {
+		"refer": [
+			"src/CHUKU/QR_Code.html",
+			"src/CHUKU/QR_Code2.html"
+		]
+	},
+	"src/PANDIAN/sub2_PANDIAN_list_unfinish.html": {
+		"refer": [
+			"src/PANDIAN/PDQR_Code_unfinish.html"
+		]
+	},
+	"src/CHUKU/sub2_CHUKU_list_unfinish.html": {
+		"refer": [
+			"src/CHUKU/QR_Code_unfinish.html",
+			"src/CHUKU/QR_Code_unfinish_2.html"
+		]
+	},
+	"src/PANDIAN/sub2_PANDIAN_main.html": {
+		"refer": [
+			"src/PANDIAN/sub2_PANDIAN_list.html"
+		]
+	}
 }

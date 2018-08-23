@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+	底部菜单页面
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <script src="../../js/mui.min.js"></script>
+    <script src="../../js/global.js"></script>
+    <script src="../../js/jquery.min.js"></script>
+    
+    <script type="text/javascript" charset="utf-8">
+    //初始化页面
+      	mui.init();
+    </script>
+</head>
+<body>
+	<body>
+	<header class="mui-bar mui-bar-nav" style="background-color: #00C3F2;">
+	    <h1 class="mui-title">扬网软件</h1>
+	</header>
+	<!--底部导航栏-->
+	<nav class="mui-bar mui-bar-tab">
+	    <!--<a class="mui-tab-item mui-active" href="sub1.html">
+	        <span class="mui-icon mui-icon-chat"></span>
+	        <span class="mui-tab-label">资讯</span>
+	    </a>-->
+	   <!--‘功能 ’页面-->
+	    <a class="mui-tab-item" href="/src/home/sub2.html" >
+	        <span class="mui-icon mui-icon-home"  ></span>
+	        <span class="mui-tab-label">功能</span>
+	    </a>
+		<!--‘我的 ’页面-->   
+	    <a class="mui-tab-item" href="/src/home/sub3.html">
+	        <span class="mui-icon mui-icon-person"></span>
+	        <span class="mui-tab-label">我的</span>
+	    </a>
+	</nav>
+</body>
+</html>
+<script type="text/javascript">
+	//获取导航栏对应子页面并设置其样式
+	var subPages=['/src/home/sub2.html','/src/home/sub3.html'];
+	var subPageStyle={
+		top:'44px',
+		bottom:'50px'
+	};
+	var aniShow={};
+	mui.plusReady(function(){
+		//声明一个变量以获取当前窗口
+		var self=plus.webview.currentWebview();
+		//遍历获取所有窗口
+		for (var i=0; i<subPages.length;i++) {
+			var sub=plus.webview.create(subPages[i],subPages[i],subPageStyle)
+			//隐藏所有窗口
+			sub.hide();
+			//应用所有窗口
+			self.append(sub);
+		}
+		//展示第一个窗口
+		plus.webview.show(subPages[0]);
+	})
+	//底部导航栏点击响应事件,即切换窗口
+	mui(".mui-bar-tab").on("tap","a",function(e){
+		var tagPage=this.getAttribute("href");
+		plus.webview.show(tagPage,"fade-in",100);
+		
+	})
+	
+mui.oldback = mui.back;
+var clickNum = 0;
+//连续点击两次手机的返回键退出应用
+mui.back = function(event){
+   clickNum++;
+   if(clickNum > 1){
+       plus.runtime.quit();
+   }else{
+       mui.toast("再按一次退出应用");
+   }
+   setTimeout(function(){
+       clickNum = 0
+   },1000);
+        return false;
+}
+
+
+</script>
+<script>
+
+</script>
